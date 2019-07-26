@@ -10,5 +10,6 @@ class MyImage extends CachedNetworkImage {
       ),
     ),
     imageUrl:url,
-    fit: BoxFit.cover);
+    fit: BoxFit.cover,
+  );
 }

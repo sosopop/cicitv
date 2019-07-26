@@ -14,4 +14,8 @@ class MyTheme {
   static Color fontColor = Colors.black54;
   static Color fontDeepColor = Colors.black87;
   static Color holderColor = Colors.grey[200];
+  static Color tagColor = Colors.orange;
+  static Color revFontColor = Colors.white;
+  static Color transBlackIcon = Color.fromARGB(128, 0, 0, 0);
+  static Color transWhiteIcon = Color.fromARGB(128, 255, 255, 255);
 }

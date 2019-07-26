@@ -3,22 +3,11 @@ import 'package:flutter/widgets.dart';
 import 'package:cicitv/common/mytheme.dart';
 import 'package:cicitv/common/myimage.dart';
 
-class ViewTwoColItem extends StatefulWidget {
-  ViewTwoColItem() {
-  }
-  @override
-  State<ViewTwoColItem> createState() => _ViewTwoColItemState();
-}
-
-class _ViewTwoColItemState extends State<ViewTwoColItem> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
+class ViewTwoColItem extends StatelessWidget {
+  final String picUrl;
+  final String title;
+  final String targetUrl;
+  ViewTwoColItem( {this.picUrl, this.title, this.targetUrl} ) {
   }
 
   @override
@@ -26,12 +15,40 @@ class _ViewTwoColItemState extends State<ViewTwoColItem> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        MyImage(
-          "https://liangcang-material.alicdn.com/prod/upload/eb4f72d284dc4a2f92ee324c44c7af4f.jpg?x-oss-process=image/resize,w_290/interlace,1/quality,Q_80/sharpen,100"
+        Stack(
+          alignment: const FractionalOffset(0.95, 0.0),//方法一
+          children: <Widget>[
+            AspectRatio(
+              child: MyImage(
+                picUrl
+              ),
+              aspectRatio: 16/9,
+            ),
+            ClipRRect(
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(MyTheme.sz(3))),
+              child:Container(
+              padding: EdgeInsets.all(MyTheme.sz(3)),
+              color: MyTheme.tagColor,
+              child: Text(
+                "100钻石",
+                style: TextStyle(
+                  fontSize: MyTheme.sz(10),
+                  color: MyTheme.revFontColor
+                ),
+                ))
+                ),
+          ],
         ),
         Container(
-          padding: EdgeInsets.all(MyTheme.sz(10)),
-          child: Text("极限挑战·朱碧石回归？"),
+          alignment: Alignment.centerLeft,
+          padding: EdgeInsets.all(MyTheme.sz(5)),
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: MyTheme.sz(14)
+            ),
+            maxLines: 1,
+            ),
         )
       ]
     );
