@@ -1,6 +1,10 @@
-import 'package:cicitv/global/mytheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:cicitv/common/mytheme.dart';
+import 'package:cicitv/ui/video/index.dart';
+import 'package:cicitv/ui/me/index.dart';
+import 'package:cicitv/ui/live/index.dart';
+import 'package:cicitv/ui/social/index.dart';
 
 class Index extends StatefulWidget {
   @override
@@ -9,13 +13,19 @@ class Index extends StatefulWidget {
 
 class _IndexState extends State<Index> with TickerProviderStateMixin {
   TabController _tabController;
-  int _selectIndex = 0;
+  int _selectPage = 0;
+  List<StatefulWidget> _pageList;
 
   @override
   void initState() {
     super.initState();
-    _tabController =
-        TabController(vsync: this, length: 5); // 和下面的 TabBar.tabs 数量对应
+    _tabController = TabController(vsync: this, length: 5);
+    _pageList = <StatefulWidget>[
+      new VideoIndex(),
+      new SocialIndex(),
+      new LiveIndex(),
+      new MeIndex()
+    ];
   }
 
   @override
@@ -28,48 +38,14 @@ class _IndexState extends State<Index> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return MaterialApp(
         home: Scaffold(
-          appBar: AppBar(
-            title: TabBar(
-              labelPadding: EdgeInsets.symmetric(horizontal: MyTheme.sz(10)),
-              indicatorSize: TabBarIndicatorSize.label,
-              isScrollable: true,
-              controller: _tabController,
-              labelStyle: TextStyle(
-                  fontSize: MyTheme.sz(24), fontWeight: FontWeight.w600),
-              labelColor: MyTheme.color,
-              unselectedLabelColor: MyTheme.fontDeepColor,
-              unselectedLabelStyle: TextStyle(fontSize: MyTheme.sz(16)),
-              tabs: <Widget>[
-                Tab(text: "推荐"),
-                Tab(text: "影星"),
-                Tab(text: "韩日"),
-                Tab(text: "欧美"),
-                Tab(text: "武侠")
-              ],
-            ),
-            elevation: 0,
-            backgroundColor: MyTheme.bgColor,
-            actions: <Widget>[
-              IconButton(icon: Icon( Icons.search), onPressed:(){
-
-              })
-            ],
-          ),
-          body: TabBarView(
-            controller: _tabController, children: <Widget>[
-            Center(child: Text('推荐')),
-            Center(child: Text('影星')),
-            Center(child: Text('韩日')),
-            Center(child: Text('欧美')),
-            Center(child: Text('武侠'))
-          ]),
+          body: _pageList[_selectPage],
           bottomNavigationBar: BottomNavigationBar(
               type: BottomNavigationBarType.fixed,
               unselectedItemColor: MyTheme.fontColor,
-              currentIndex: _selectIndex,
+              currentIndex: _selectPage,
               onTap: (int index) {
                 setState(() {
-                  _selectIndex = index;
+                  _selectPage = index;
                 });
               },
               items: <BottomNavigationBarItem>[
