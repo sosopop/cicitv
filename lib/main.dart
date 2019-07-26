@@ -1,4 +1,4 @@
 import 'package:flutter/material.dart';
-import 'index.dart';
+import 'package:cicitv/ui/index.dart';
 
 void main() => runApp(Index());
