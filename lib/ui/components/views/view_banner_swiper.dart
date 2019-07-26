@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:cicitv/common/mytheme.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cicitv/common/myimage.dart';
 
 class ViewBannerSwiper extends StatefulWidget {
   ViewBannerSwiper() {
@@ -39,15 +39,7 @@ class _ViewBannerSwiperState extends State<ViewBannerSwiper> {
       itemBuilder: (BuildContext context, int index) {
         return ClipRRect(
           borderRadius:BorderRadius.circular(MyTheme.sz(5)),
-          child:  CachedNetworkImage(
-            placeholder: (context, url) => DecoratedBox(
-              decoration: BoxDecoration(
-                color: MyTheme.holderColor
-              ),
-            ),
-            imageUrl:_urls[index],
-            fit: BoxFit.cover
-            )
+          child:  MyImage(_urls[index])
         );
       },
       itemCount: _urls.length,

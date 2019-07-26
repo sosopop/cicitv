@@ -13,3 +13,11 @@ class MyImage extends CachedNetworkImage {
     fit: BoxFit.cover,
   );
 }
+/*
+Image MyImage( url ) {
+  return Image.network(
+    url,
+    fit: BoxFit.cover,
+    );
+}
+*/
