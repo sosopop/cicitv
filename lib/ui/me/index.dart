@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:cicitv/common/mytheme.dart';
-import 'package:cicitv/ui/components/page.dart';
 
 class MeIndex extends StatefulWidget {
   @override

@@ -4,8 +4,7 @@ import 'package:cicitv/common/mytheme.dart';
 import 'package:cicitv/ui/components/views/view_two_col_item.dart';
 
 class ViewTwoColPanel extends StatefulWidget {
-  ViewTwoColPanel() {
-  }
+  ViewTwoColPanel();
   @override
   State<ViewTwoColPanel> createState() => _ViewTwoColPanelState();
 }
@@ -69,19 +68,19 @@ class _ViewTwoColPanelState extends State<ViewTwoColPanel> {
           //子Widget列表
           children: <Widget>[
             ViewTwoColItem(
-              picUrl:"https://liangcang-material.alicdn.com/prod/upload/0d46551a90414b439d6a36befe11d645.jpg?x-oss-process=image/resize,w_290/interlace,1/quality,Q_80/sharpen,100",
+              picUrl:"https://liangcang-material.alicdn.com/prod/upload/0d46551a90414b439d6a36befe11d645.jpg",
               title:"萧正楠林夏薇破悬疑奇案"
             ),
             ViewTwoColItem(
-              picUrl:"https://r1.ykimg.com/050C000059E95739AD881A0485004B7F?x-oss-process=image/resize,w_290/interlace,1/quality,Q_80/sharpen,100",
+              picUrl:"https://r1.ykimg.com/050C000059E95739AD881A0485004B7F",
               title:"第一网络神剧贺岁篇"
             ),
             ViewTwoColItem(
-              picUrl:"https://liangcang-material.alicdn.com/prod/upload/1cb010ad57a74fdc9ed4622a72d1d8d2.jpg?x-oss-process=image/resize,w_290/interlace,1/quality,Q_80/sharpen,100",
-              title:"鞠婧祎复仇炎亚纶痴心守护"
+              picUrl:"https://liangcang-material.alicdn.com/prod/upload/70388807e63b4d74b09d7e0952b7dfcc.gif",
+              title:"鞠婧祎炎亚纶携手破冤案"
             ),
             ViewTwoColItem(
-              picUrl:"https://r1.ykimg.com/050E00005CD287A9859B5DB9D801B34F?x-oss-process=image/resize,w_290/interlace,1/quality,Q_80/sharpen,100",
+              picUrl:"https://r1.ykimg.com/050E00005CD287A9859B5DB9D801B34F",
               title:"青涩初恋模样"
             )
           ]

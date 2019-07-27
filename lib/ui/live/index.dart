@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:cicitv/common/mytheme.dart';
-import 'package:cicitv/ui/components/page.dart';
 import 'package:cicitv/ui/components/views/view_two_col_item.dart';
 
 class LiveIndex extends StatefulWidget {

@@ -4,8 +4,7 @@ import 'package:cicitv/common/mytheme.dart';
 import 'package:cicitv/ui/components/views/view_video_show_item.dart';
 
 class ViewVideoShowPanel extends StatefulWidget {
-  ViewVideoShowPanel() {
-  }
+  ViewVideoShowPanel();
   @override
   State<ViewVideoShowPanel> createState() => _ViewVideoShowPanelState();
 }

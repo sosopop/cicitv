@@ -57,10 +57,10 @@ class _IndexState extends State<VideoIndex> with TickerProviderStateMixin {
           body: TabBarView(
             controller: _tabController, children: <Widget>[
             Center(child: MyPage('http://www.baidu.com')),
-            Center(child: Text('影星')),
-            Center(child: Text('韩日')),
-            Center(child: Text('欧美')),
-            Center(child: Text('武侠'))
+            Center(child: MyPage('video')),
+            Center(child: MyPage('video')),
+            Center(child: MyPage('video')),
+            Center(child: MyPage('video'))
           ])
         );
   }

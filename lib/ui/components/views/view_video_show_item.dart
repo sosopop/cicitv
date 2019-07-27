@@ -7,8 +7,8 @@ class ViewVideoShowItem extends StatelessWidget {
   final String picUrl;
   final String title;
   final String targetUrl;
-  ViewVideoShowItem( {this.picUrl, this.title, this.targetUrl} ) {
-  }
+  final int playCount;
+  ViewVideoShowItem( {this.picUrl, this.title, this.targetUrl, this.playCount} );
 
   @override
   Widget build(BuildContext context) {
@@ -61,16 +61,50 @@ class ViewVideoShowItem extends StatelessWidget {
             )
           ],
         ),
-        Container(
-          alignment: Alignment.centerLeft,
+        FlatButton(
+          onPressed: () {
+
+          },
           padding: EdgeInsets.all(MyTheme.sz(10)),
-          child: Text(
-            title,
-            style: TextStyle(
-              fontSize: MyTheme.sz(14)
-            ),
-            maxLines: 1,
-            ),
+          child:Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Expanded(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: MyTheme.sz(16)
+                  ),
+                  maxLines: 1,
+                )
+              ),
+              Icon(
+                Icons.visibility,
+                color: MyTheme.fontColor
+              ),
+              SizedBox(
+                width: MyTheme.sz(5),
+              ),
+              Text(
+                "1001",
+                style: TextStyle(color: MyTheme.fontColor,fontSize: MyTheme.sz(12)),
+              ),
+              SizedBox(
+                width: MyTheme.sz(7),
+              ),
+              Icon(
+                Icons.chat_bubble_outline,
+                color: MyTheme.fontColor
+              ),
+              SizedBox(
+                width: MyTheme.sz(5),
+              ),
+              Text(
+                "97",
+                style: TextStyle(color: MyTheme.fontColor,fontSize: MyTheme.sz(12)),
+              )
+        ]
+          ),
         )
       ]
     );

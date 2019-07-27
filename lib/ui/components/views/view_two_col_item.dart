@@ -7,8 +7,7 @@ class ViewTwoColItem extends StatelessWidget {
   final String picUrl;
   final String title;
   final String targetUrl;
-  ViewTwoColItem( {this.picUrl, this.title, this.targetUrl} ) {
-  }
+  ViewTwoColItem( {this.picUrl, this.title, this.targetUrl} );
 
   @override
   Widget build(BuildContext context) {
