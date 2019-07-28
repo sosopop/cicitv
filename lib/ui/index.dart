@@ -62,9 +62,7 @@ class _IndexState extends State<Index> with TickerProviderStateMixin {
         theme: ThemeData(
             highlightColor: Colors.transparent,
             splashColor: Colors.transparent,
-            primaryIconTheme: IconThemeData(
-              color: MyTheme.colorDark
-            ),
+            primaryIconTheme: IconThemeData(color: MyTheme.colorDark),
             primarySwatch: MyTheme.color,
             primaryColor: MyTheme.color));
   }

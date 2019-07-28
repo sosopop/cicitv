@@ -21,22 +21,6 @@ class _IndexState extends State<LiveIndex> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-          //水平子Widget之间间距
-          crossAxisSpacing: 10.0,
-          //垂直子Widget之间间距
-          mainAxisSpacing: 30.0,
-          //GridView内边距
-          padding: EdgeInsets.all(MyTheme.sz(10.0)),
-          //一行的Widget数量
-          crossAxisCount: 2,
-          //子Widget宽高比例
-          childAspectRatio: 1.0,
-          //子Widget列表
-          children: <Widget>[
-            ViewTwoColItem(),
-            ViewTwoColItem()
-          ]
-        );
+    return Text("");
   }
 }
