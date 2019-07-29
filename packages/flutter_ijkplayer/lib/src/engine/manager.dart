@@ -129,8 +129,8 @@ class IjkManager {
   static unlockOrientation() async {
     if (Platform.isAndroid) {
       await SystemChrome.setPreferredOrientations([
-        // DeviceOrientation.landscapeLeft,
-        // DeviceOrientation.landscapeRight,
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
         DeviceOrientation.portraitUp,
         DeviceOrientation.portraitDown,
       ]);

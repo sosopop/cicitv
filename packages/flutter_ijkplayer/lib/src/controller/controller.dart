@@ -194,13 +194,11 @@ class IjkMediaController
     pauseOther = false,
   }) async {
     var videoInfo = await getVideoInfo();
-    if (videoInfo != null) {
-      var playing = videoInfo.isPlaying;
-      if (playing) {
-        await pause();
-      } else {
-        await play(pauseOther: pauseOther);
-      }
+    var playing = videoInfo.isPlaying;
+    if (playing) {
+      await pause();
+    } else {
+      await play(pauseOther: pauseOther);
     }
   }
 

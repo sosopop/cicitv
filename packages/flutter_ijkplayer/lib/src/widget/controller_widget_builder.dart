@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
+import 'package:flutter_ijkplayer/src/helper/full_screen_helper.dart';
 import 'package:flutter_ijkplayer/src/helper/logutil.dart';
 import 'package:flutter_ijkplayer/src/helper/time_helper.dart';
 import 'package:flutter_ijkplayer/src/helper/ui_helper.dart';
@@ -55,8 +56,6 @@ class DefaultIJKControllerWidget extends StatefulWidget {
   /// See [FullScreenType]
   final FullScreenType fullScreenType;
 
-  final bool backButton;
-
   /// The UI of the controller.
   const DefaultIJKControllerWidget({
     Key key,
@@ -70,7 +69,6 @@ class DefaultIJKControllerWidget extends StatefulWidget {
     this.showFullScreenButton = true,
     this.fullscreenControllerWidgetBuilder,
     this.fullScreenType = FullScreenType.rotateBox,
-    this.backButton = false,
   }) : super(key: key);
 
   @override
@@ -89,7 +87,6 @@ class DefaultIJKControllerWidget extends StatefulWidget {
     bool showFullScreenButton,
     IJKControllerWidgetBuilder fullscreenControllerWidgetBuilder,
     FullScreenType fullScreenType,
-    bool backButton,
   }) {
     return DefaultIJKControllerWidget(
       controller: controller ?? this.controller,
@@ -105,7 +102,6 @@ class DefaultIJKControllerWidget extends StatefulWidget {
       showFullScreenButton: showFullScreenButton ?? this.showFullScreenButton,
       verticalGesture: verticalGesture ?? this.verticalGesture,
       fullScreenType: fullScreenType ?? this.fullScreenType,
-      backButton: backButton ?? this.backButton,
     );
   }
 }
@@ -239,14 +235,16 @@ class _DefaultIJKControllerWidgetState extends State<DefaultIJKControllerWidget>
     );
   }
 
+  int _overlayTurns = 0;
+
   Widget buildPortrait(VideoInfo info) {
+    _overlayTurns = FullScreenHelper.getQuarterTurns(info, context);
     return PortraitController(
       controller: controller,
       info: info,
       tooltipDelegate: this,
       playWillPauseOther: widget.playWillPauseOther,
       fullScreenWidget: _buildFullScreenButton(),
-      parent: widget,
     );
   }
 
@@ -279,11 +277,20 @@ class _DefaultIJKControllerWidgetState extends State<DefaultIJKControllerWidget>
     hideTooltip();
     _tipOverlay = OverlayEntry(
       builder: (BuildContext context) {
-        return IgnorePointer(
+        Widget w = IgnorePointer(
           child: Center(
             child: widget,
           ),
         );
+
+        if (this.widget.fullScreenType == FullScreenType.rotateBox && this.widget.currentFullScreenState && _overlayTurns != 0) {
+          w = RotatedBox(
+            child: w,
+            quarterTurns: _overlayTurns,
+          );
+        }
+
+        return w;
       },
     );
     Overlay.of(context).insert(_tipOverlay);
