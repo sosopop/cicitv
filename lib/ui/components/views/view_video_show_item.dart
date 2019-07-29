@@ -41,8 +41,8 @@ class _ViewVideoShowItemState extends State<ViewVideoShowItem> {
       _videoCheckTimer.cancel();
     }
     if (lastVideoView == this) {
-      //ViewVideoPlayer.reset();
-      //lastVideoView = null;
+      //VideoUtil.reset();
+      lastVideoView = null;
     }
     super.dispose();
   }
@@ -80,147 +80,56 @@ class _ViewVideoShowItemState extends State<ViewVideoShowItem> {
     _player = false;
     setState(() {});
     if (lastVideoView == this) {
-      ViewVideoPlayer.reset();
+      VideoUtil.reset();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          GestureDetector(
-            onTap: () async {
-              if (lastVideoView != null) {
-                ViewVideoPlayer.reset();
-                lastVideoView._player = false;
-                lastVideoView.setState(() {});
-              }
-              lastVideoView = this;
-              _player = true;
-              _videoCheckTimer =
-                  Timer.periodic(Duration(seconds: 1), videoCheck);
-              setState(() {});
-            },
-            child: _player
-                ? AspectRatio(
-                    child: ViewVideoPlayer(
-                      widget.videoUrl,
-                      true,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        GestureDetector(
+          onTap: () async {
+            if (lastVideoView != null) {
+              VideoUtil.reset();
+              lastVideoView._player = false;
+              lastVideoView.setState(() {});
+            }
+            lastVideoView = this;
+            _player = true;
+            if (_videoCheckTimer != null) {
+              _videoCheckTimer.cancel();
+            }
+            _videoCheckTimer = Timer.periodic(Duration(seconds: 1), videoCheck);
+            setState(() {});
+          },
+          child: _player
+              ? AspectRatio(
+                  child: ViewVideoPlayer(
+                    url: widget.videoUrl,
+                    autoPlay: true,
+                    playEnd: () {
+                      _player = false;
+                      setState(() {});
+                    },
+                  ),
+                  aspectRatio: 16 / 9,
+                )
+              : Stack(
+                  children: <Widget>[
+                    AspectRatio(
+                      child: MyImage(widget.picUrl),
+                      aspectRatio: 16 / 9,
                     ),
-                    aspectRatio: 16 / 9,
-                  )
-                : Stack(
-                    children: <Widget>[
-                      AspectRatio(
-                        child: MyImage(widget.picUrl),
-                        aspectRatio: 16 / 9,
-                      ),
-                      Positioned(
-                        top: 0,
-                        right: MyTheme.sz(
-                            MediaQuery.of(context).size.width * 3 / 100),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.vertical(
-                              bottom: Radius.circular(MyTheme.sz(3))),
-                          child: Container(
-                            padding: EdgeInsets.all(MyTheme.sz(3)),
-                            color: MyTheme.tagColor,
-                            child: Text(
-                              "100钻石",
-                              style: TextStyle(
-                                  fontSize: MyTheme.sz(10),
-                                  color: MyTheme.revFontColor),
-                            ),
-                          ),
-                        ),
-                      ),
-                      AspectRatio(
-                        child: Center(
-                          child: ClipOval(
-                            child: Container(
-                              padding: EdgeInsets.all(10),
-                              child: Icon(
-                                Icons.play_arrow,
-                                size: MyTheme.sz(50),
-                                color: MyTheme.transWhiteIcon,
-                              ),
-                              color: MyTheme.transBlackIcon,
-                            ),
-                          ),
-                        ),
-                        aspectRatio: 16 / 9,
-                      )
-                    ],
-                  ),
-          ),
-          FlatButton(
-            onPressed: () {},
-            padding: EdgeInsets.all(MyTheme.sz(10)),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Expanded(
-                    child: Text(
-                      widget.title,
-                      style: TextStyle(fontSize: MyTheme.sz(16)),
-                      maxLines: 1,
-                    ),
-                  ),
-                  Icon(Icons.visibility, color: MyTheme.fontColor),
-                  SizedBox(
-                    width: MyTheme.sz(5),
-                  ),
-                  Text(
-                    "1001",
-                    style: TextStyle(
-                        color: MyTheme.fontColor, fontSize: MyTheme.sz(12)),
-                  ),
-                  SizedBox(
-                    width: MyTheme.sz(7),
-                  ),
-                  Icon(Icons.chat_bubble_outline, color: MyTheme.fontColor),
-                  SizedBox(
-                    width: MyTheme.sz(5),
-                  ),
-                  Text(
-                    "97",
-                    style: TextStyle(
-                        color: MyTheme.fontColor, fontSize: MyTheme.sz(12)),
-                  )
-                ]),
-          )
-        ]);
-  }
-}
-
-/*
-class ViewVideoShowItem extends StatelessWidget {
-  final String picUrl;
-  final String title;
-  final String targetUrl;
-  final int playCount;
-  ViewVideoShowItem({this.picUrl, this.title, this.targetUrl, this.playCount});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Stack(
-            children: <Widget>[
-              AspectRatio(
-                child: MyImage(picUrl),
-                aspectRatio: 16 / 9,
-              ),
-              Positioned(
-                  top: 0,
-                  right:
-                      MyTheme.sz(MediaQuery.of(context).size.width * 3 / 100),
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.vertical(
-                          bottom: Radius.circular(MyTheme.sz(3))),
-                      child: Container(
+                    Positioned(
+                      top: 0,
+                      right: MyTheme.sz(
+                          MediaQuery.of(context).size.width * 3 / 100),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.vertical(
+                            bottom: Radius.circular(MyTheme.sz(3))),
+                        child: Container(
                           padding: EdgeInsets.all(MyTheme.sz(3)),
                           color: MyTheme.tagColor,
                           child: Text(
@@ -228,62 +137,67 @@ class ViewVideoShowItem extends StatelessWidget {
                             style: TextStyle(
                                 fontSize: MyTheme.sz(10),
                                 color: MyTheme.revFontColor),
-                          )))),
-              AspectRatio(
-                child: Center(
-                    child: FlatButton(
-                  child: Icon(
-                    Icons.play_arrow,
-                    size: MyTheme.sz(50),
-                    color: MyTheme.transWhiteIcon,
-                  ),
-                  color: MyTheme.transBlackIcon,
-                  onPressed: () {},
-                  shape: RoundedRectangleBorder(
-                      side: BorderSide.none,
-                      borderRadius:
-                          BorderRadius.all(Radius.circular(MyTheme.sz(50)))),
-                )),
-                aspectRatio: 16 / 9,
+                          ),
+                        ),
+                      ),
+                    ),
+                    AspectRatio(
+                      child: Center(
+                        child: ClipOval(
+                          child: Container(
+                            padding: EdgeInsets.all(10),
+                            child: Icon(
+                              Icons.play_arrow,
+                              size: MyTheme.sz(50),
+                              color: MyTheme.transWhiteIcon,
+                            ),
+                            color: MyTheme.transBlackIcon,
+                          ),
+                        ),
+                      ),
+                      aspectRatio: 16 / 9,
+                    )
+                  ],
+                ),
+        ),
+        FlatButton(
+          onPressed: () {},
+          padding: EdgeInsets.all(MyTheme.sz(10)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Expanded(
+                child: Text(
+                  widget.title,
+                  style: TextStyle(fontSize: MyTheme.sz(16)),
+                  maxLines: 1,
+                ),
+              ),
+              Icon(Icons.visibility, color: MyTheme.fontColor),
+              SizedBox(
+                width: MyTheme.sz(5),
+              ),
+              Text(
+                "1001",
+                style: TextStyle(
+                    color: MyTheme.fontColor, fontSize: MyTheme.sz(12)),
+              ),
+              SizedBox(
+                width: MyTheme.sz(7),
+              ),
+              Icon(Icons.chat_bubble_outline, color: MyTheme.fontColor),
+              SizedBox(
+                width: MyTheme.sz(5),
+              ),
+              Text(
+                "97",
+                style: TextStyle(
+                    color: MyTheme.fontColor, fontSize: MyTheme.sz(12)),
               )
             ],
           ),
-          FlatButton(
-            onPressed: () {},
-            padding: EdgeInsets.all(MyTheme.sz(10)),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Expanded(
-                      child: Text(
-                    title,
-                    style: TextStyle(fontSize: MyTheme.sz(16)),
-                    maxLines: 1,
-                  )),
-                  Icon(Icons.visibility, color: MyTheme.fontColor),
-                  SizedBox(
-                    width: MyTheme.sz(5),
-                  ),
-                  Text(
-                    "1001",
-                    style: TextStyle(
-                        color: MyTheme.fontColor, fontSize: MyTheme.sz(12)),
-                  ),
-                  SizedBox(
-                    width: MyTheme.sz(7),
-                  ),
-                  Icon(Icons.chat_bubble_outline, color: MyTheme.fontColor),
-                  SizedBox(
-                    width: MyTheme.sz(5),
-                  ),
-                  Text(
-                    "97",
-                    style: TextStyle(
-                        color: MyTheme.fontColor, fontSize: MyTheme.sz(12)),
-                  )
-                ]),
-          )
-        ]);
+        )
+      ],
+    );
   }
 }
-*/

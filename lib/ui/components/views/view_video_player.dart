@@ -8,16 +8,23 @@ import 'package:flutter/services.dart';
 import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 import 'package:flutter/foundation.dart';
 
-class ViewVideoPlayer extends StatefulWidget {
-  final String url;
-  final bool autoPlay;
-  ViewVideoPlayer(this.url, this.autoPlay);
-  @override
-  State<ViewVideoPlayer> createState() => _ViewVideoPlayerState();
-
+class VideoUtil {
   static void reset() {
     controller.reset();
   }
+}
+
+class ViewVideoPlayer extends StatefulWidget {
+  final String url;
+  final bool autoPlay;
+  final Function playEnd;
+  ViewVideoPlayer({
+    this.url,
+    this.playEnd,
+    this.autoPlay,
+  });
+  @override
+  State<ViewVideoPlayer> createState() => _ViewVideoPlayerState();
 }
 
 IjkMediaController controller = IjkMediaController(autoRotate: false);
@@ -43,7 +50,11 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    controller.setNetworkDataSource(widget.url, autoPlay: widget.autoPlay);
+    (() async {
+      await controller.reset();
+      await controller.setNetworkDataSource(widget.url,
+          autoPlay: widget.autoPlay);
+    })();
   }
 
   @override
