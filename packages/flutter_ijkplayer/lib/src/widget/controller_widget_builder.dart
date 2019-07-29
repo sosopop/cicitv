@@ -55,6 +55,8 @@ class DefaultIJKControllerWidget extends StatefulWidget {
   /// See [FullScreenType]
   final FullScreenType fullScreenType;
 
+  final bool backButton;
+
   /// The UI of the controller.
   const DefaultIJKControllerWidget({
     Key key,
@@ -68,6 +70,7 @@ class DefaultIJKControllerWidget extends StatefulWidget {
     this.showFullScreenButton = true,
     this.fullscreenControllerWidgetBuilder,
     this.fullScreenType = FullScreenType.rotateBox,
+    this.backButton = false,
   }) : super(key: key);
 
   @override
@@ -86,6 +89,7 @@ class DefaultIJKControllerWidget extends StatefulWidget {
     bool showFullScreenButton,
     IJKControllerWidgetBuilder fullscreenControllerWidgetBuilder,
     FullScreenType fullScreenType,
+    bool backButton,
   }) {
     return DefaultIJKControllerWidget(
       controller: controller ?? this.controller,
@@ -101,6 +105,7 @@ class DefaultIJKControllerWidget extends StatefulWidget {
       showFullScreenButton: showFullScreenButton ?? this.showFullScreenButton,
       verticalGesture: verticalGesture ?? this.verticalGesture,
       fullScreenType: fullScreenType ?? this.fullScreenType,
+      backButton: backButton ?? this.backButton,
     );
   }
 }
@@ -241,6 +246,7 @@ class _DefaultIJKControllerWidgetState extends State<DefaultIJKControllerWidget>
       tooltipDelegate: this,
       playWillPauseOther: widget.playWillPauseOther,
       fullScreenWidget: _buildFullScreenButton(),
+      parent: widget,
     );
   }
 
@@ -517,15 +523,17 @@ class PortraitController extends StatelessWidget {
   final TooltipDelegate tooltipDelegate;
   final bool playWillPauseOther;
   final Widget fullScreenWidget;
+  final DefaultIJKControllerWidget parent;
 
-  const PortraitController({
-    Key key,
-    this.controller,
-    this.info,
-    this.tooltipDelegate,
-    this.playWillPauseOther = true,
-    this.fullScreenWidget,
-  }) : super(key: key);
+  const PortraitController(
+      {Key key,
+      this.controller,
+      this.info,
+      this.tooltipDelegate,
+      this.playWillPauseOther = true,
+      this.fullScreenWidget,
+      this.parent})
+      : super(key: key);
 
   bool get haveTime {
     return info.hasData && info.duration > 0;
@@ -539,6 +547,29 @@ class PortraitController extends StatelessWidget {
     Widget bottomBar = buildBottomBar(context);
     return Column(
       children: <Widget>[
+        parent.backButton
+            ? Container(
+                margin: EdgeInsets.all(10),
+                alignment: Alignment.topLeft,
+                child: ClipOval(
+                  child: Container(
+                    height: 44,
+                    width: 44,
+                    color: Color.fromARGB(128, 0, 0, 0),
+                    alignment: Alignment.topLeft,
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                ),
+              )
+            : Container(),
         Expanded(
           child: Container(),
         ),

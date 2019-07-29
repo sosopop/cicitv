@@ -6,6 +6,7 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 //import 'package:chewie/chewie.dart';
 import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
+import 'package:flutter/foundation.dart';
 
 class ViewVideoPlayer extends StatefulWidget {
   final String url;
@@ -13,27 +14,41 @@ class ViewVideoPlayer extends StatefulWidget {
   ViewVideoPlayer(this.url, this.autoPlay);
   @override
   State<ViewVideoPlayer> createState() => _ViewVideoPlayerState();
+
+  static void reset() {
+    controller.reset();
+  }
 }
 
-class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
+IjkMediaController controller = IjkMediaController(autoRotate: false);
+
+class _ViewVideoPlayerState extends State<ViewVideoPlayer>
+    with WidgetsBindingObserver {
   _ViewVideoPlayerState();
 
-  IjkMediaController controller;
+  @override
+  Future<Null> didChangeAppLifecycleState(AppLifecycleState state) async {
+    switch (state) {
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.paused:
+      case AppLifecycleState.suspending:
+        controller.pause();
+        break;
+      case AppLifecycleState.resumed:
+        break;
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    if (controller == null) {
-      controller = IjkMediaController(autoRotate: false);
-    }
+    WidgetsBinding.instance.addObserver(this);
     controller.setNetworkDataSource(widget.url, autoPlay: widget.autoPlay);
   }
 
   @override
   void dispose() {
-    if (controller != null) {
-      //controller.dispose();
-    }
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -50,48 +65,13 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
           horizontalGesture: false,
           fullScreenType: FullScreenType.rotateScreen,
           fullscreenControllerWidgetBuilder: (IjkMediaController controller) {
-            return WillPopScope(
-              onWillPop: () async {
-                await IjkManager.setPortrait();
-                Timer(Duration(seconds: 1), () {
-                  SystemChrome.setPreferredOrientations([
-                    DeviceOrientation.portraitUp,
-                    DeviceOrientation.portraitDown
-                  ]);
-                });
-                return true;
-              },
-              child: Stack(
-                children: <Widget>[
-                  DefaultIJKControllerWidget(
-                    controller: controller,
-                    fullScreenType: FullScreenType.rotateScreen,
-                    doubleTapPlay: true,
-                    currentFullScreenState: true,
-                    showFullScreenButton: false,
-                  ),
-                  Container(
-                    height: 44.0,
-                    width: 44.0,
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.arrow_back_ios,
-                        color: Colors.white,
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                        IjkManager.setPortrait();
-                        Timer(Duration(seconds: 1), () {
-                          SystemChrome.setPreferredOrientations([
-                            DeviceOrientation.portraitUp,
-                            DeviceOrientation.portraitDown
-                          ]);
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              ),
+            return DefaultIJKControllerWidget(
+              backButton: true,
+              controller: controller,
+              fullScreenType: FullScreenType.rotateScreen,
+              doubleTapPlay: true,
+              currentFullScreenState: true,
+              showFullScreenButton: true,
             );
           },
         );
@@ -101,6 +81,15 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
         IjkMediaController controller,
         IjkStatus status,
       ) {
+        if (status == IjkStatus.preparing) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (status == IjkStatus.prepared) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
         // you can custom your self status widget
         return IjkStatusWidget.buildStatusWidget(context, controller, status);
       },
