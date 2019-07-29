@@ -19,9 +19,13 @@ class MyPage extends StatefulWidget {
   }
 }
 
-class _MyPageState extends State<MyPage> {
+class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
   String url;
   _MyPageState(this.url);
+
+  @protected
+  bool get wantKeepAlive => true;
+
   @override
   void initState() {
     super.initState();

@@ -31,11 +31,15 @@ class _ViewVideoShowPanelState extends State<ViewVideoShowPanel> {
               Row(children: <Widget>[
                 Expanded(
                   child: Padding(
-                      padding: EdgeInsets.all(MyTheme.sz(10)),
-                      child: Text("精选",
-                          style: TextStyle(
-                              fontSize: MyTheme.sz(20),
-                              fontWeight: FontWeight.w600))),
+                    padding: EdgeInsets.all(MyTheme.sz(10)),
+                    child: Text(
+                      "精选",
+                      style: TextStyle(
+                        fontSize: MyTheme.sz(20),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
                 ),
                 FlatButton(
                   onPressed: () {},

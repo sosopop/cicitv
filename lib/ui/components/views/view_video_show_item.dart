@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:cicitv/common/mytheme.dart';
 import 'package:cicitv/common/myimage.dart';
 //import 'package:chewie/chewie.dart';
-import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
+//import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 import 'package:cicitv/ui/components/views/view_video_player.dart';
 import 'package:flutter/foundation.dart';
 
@@ -26,8 +26,6 @@ class _ViewVideoShowItemState extends State<ViewVideoShowItem> {
   _ViewVideoShowItemState();
 
   bool _player = false;
-  static _ViewVideoShowItemState lastVideoView;
-  Timer _videoCheckTimer;
 
   @override
   void initState() {
@@ -37,51 +35,41 @@ class _ViewVideoShowItemState extends State<ViewVideoShowItem> {
   @override
   void dispose() {
     debugPrint("dispose");
-    if (_videoCheckTimer != null) {
-      _videoCheckTimer.cancel();
-    }
-    if (lastVideoView == this) {
-      //VideoUtil.reset();
-      lastVideoView = null;
-    }
     super.dispose();
   }
 
-  void videoCheck(Timer timer) {
-    RenderObject obj = context.findRenderObject();
-    RenderAbstractViewport viewport = RenderAbstractViewport.of(obj);
-    if (viewport != null) {
-      double vpHeight = viewport.paintBounds.height;
-      ScrollableState scrollableState = Scrollable.of(context);
-      ScrollPosition scrollPosition = scrollableState.position;
-      final Size size = obj?.semanticBounds?.size;
-      RevealedOffset vpOffset = viewport.getOffsetToReveal(obj, 0.0);
-      final double deltaTop = vpOffset.offset - scrollPosition.pixels;
-      final double deltaBottom = deltaTop + size.height;
+  // void videoCheck(Timer timer) {
+  //   RenderObject obj = context.findRenderObject();
+  //   RenderAbstractViewport viewport = RenderAbstractViewport.of(obj);
+  //   if (viewport != null) {
+  //     double vpHeight = viewport.paintBounds.height;
+  //     ScrollableState scrollableState = Scrollable.of(context);
+  //     ScrollPosition scrollPosition = scrollableState.position;
+  //     final Size size = obj?.semanticBounds?.size;
+  //     RevealedOffset vpOffset = viewport.getOffsetToReveal(obj, 0.0);
+  //     final double deltaTop = vpOffset.offset - scrollPosition.pixels;
+  //     final double deltaBottom = deltaTop + size.height;
 
-      bool isInViewport = false;
+  //     bool isInViewport = false;
 
-      isInViewport = (deltaTop >= 0.0 && deltaTop < vpHeight);
-      if (!isInViewport) {
-        isInViewport = (deltaBottom > 0.0 && deltaBottom < vpHeight);
-      }
+  //     isInViewport = (deltaTop >= 0.0 && deltaTop < vpHeight);
+  //     if (!isInViewport) {
+  //       isInViewport = (deltaBottom > 0.0 && deltaBottom < vpHeight);
+  //     }
 
-      if (!isInViewport) {
-        timer.cancel();
-        resetViewState();
-      }
+  //     if (!isInViewport) {
+  //       timer.cancel();
+  //       resetViewState();
+  //     }
 
-      debugPrint(
-          'scrollPosition.pixels:${scrollPosition.pixels}, deltaTop:$deltaTop, offset: $vpOffset -- VP?: $isInViewport');
-    }
-  }
+  //     debugPrint(
+  //         'scrollPosition.pixels:${scrollPosition.pixels}, deltaTop:$deltaTop, offset: $vpOffset -- VP?: $isInViewport');
+  //   }
+  // }
 
   void resetViewState() {
     _player = false;
     setState(() {});
-    if (lastVideoView == this) {
-      VideoUtil.reset();
-    }
   }
 
   @override
@@ -91,17 +79,7 @@ class _ViewVideoShowItemState extends State<ViewVideoShowItem> {
       children: <Widget>[
         GestureDetector(
           onTap: () async {
-            if (lastVideoView != null) {
-              VideoUtil.reset();
-              lastVideoView._player = false;
-              lastVideoView.setState(() {});
-            }
-            lastVideoView = this;
             _player = true;
-            if (_videoCheckTimer != null) {
-              _videoCheckTimer.cancel();
-            }
-            _videoCheckTimer = Timer.periodic(Duration(seconds: 1), videoCheck);
             setState(() {});
           },
           child: _player
@@ -109,10 +87,6 @@ class _ViewVideoShowItemState extends State<ViewVideoShowItem> {
                   child: ViewVideoPlayer(
                     url: widget.videoUrl,
                     autoPlay: true,
-                    playEnd: () {
-                      _player = false;
-                      setState(() {});
-                    },
                   ),
                   aspectRatio: 16 / 9,
                 )
