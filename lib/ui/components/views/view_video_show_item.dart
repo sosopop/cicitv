@@ -110,10 +110,10 @@ class ViewVideoShowItem extends StatelessWidget {
                 padding: EdgeInsets.all(10),
                 child: Icon(
                   Icons.play_arrow,
-                  size: MyTheme.sz(50),
-                  color: MyTheme.transWhiteIcon,
+                  size: MyTheme.sz(40),
+                  color: Colors.black54,
                 ),
-                color: MyTheme.transBlackIcon,
+                color: Colors.white60,
               ),
             ),
           ),

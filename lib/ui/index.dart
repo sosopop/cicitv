@@ -50,13 +50,29 @@ class _IndexState extends State<Index> with TickerProviderStateMixin {
               },
               items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.video_library), title: Text('视频')),
+                  icon: Icon(Icons.video_library),
+                  title: Text('视频'),
+                ),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.group_work), title: Text('圈子')),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.ondemand_video), title: Text('直播')),
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.person), title: Text('我的')),
+                  icon: Stack(children: <Widget>[
+                    Container(
+                      width: 30,
+                      child: Icon(Icons.person),
+                    ),
+                    Positioned(
+                      // draw a red marble
+                      top: 0.0,
+                      right: 0.0,
+                      child: Icon(Icons.brightness_1,
+                          size: 8.0, color: Colors.redAccent),
+                    )
+                  ]),
+                  title: Text('我的'),
+                ),
               ]),
         ),
         theme: ThemeData(
