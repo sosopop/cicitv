@@ -29,13 +29,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.2"
-  chewie:
-    dependency: "direct main"
-    description:
-      name: chewie
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.9.7"
   collection:
     dependency: transitive
     description:
@@ -130,13 +123,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.6"
-  open_iconic_flutter:
-    dependency: transitive
-    description:
-      name: open_iconic_flutter
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.3.0"
   path:
     dependency: transitive
     description:
@@ -165,13 +151,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.3"
-  screen:
-    dependency: transitive
+  rxdart:
+    dependency: "direct main"
     description:
-      name: screen
+      name: rxdart
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.5"
+    version: "0.22.1"
   sky_engine:
     dependency: transitive
     description: flutter

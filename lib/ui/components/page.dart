@@ -38,6 +38,8 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     if (url == "video") {
       return Center(
         child: NotificationListener<ScrollNotification>(
@@ -48,6 +50,7 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
             padding: EdgeInsets.only(top: MyTheme.sz(10)),
             children: <Widget>[
               ViewVideoShowItem(
+                UniqueKey(),
                 picUrl:
                     "https://ykimg.alicdn.com/develop/image/2019-03-13/013cc9422f4c032737722edf1e6180f7.jpg",
                 title: "姚芊羽李建上演新农村创业",
@@ -55,6 +58,7 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                     'http://vt1.doubanio.com/201907282221/89914aee4053b2b45458a8b94b6a8e92/view/movie/M/402400540.mp4',
               ),
               ViewVideoShowItem(
+                UniqueKey(),
                 picUrl:
                     "https://liangcang-material.alicdn.com/prod/upload/9a0cd5d5b55746f5954211db3467d717.jpg",
                 title: "邓伦马思纯都市情感甜怼恋",
@@ -62,6 +66,7 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                     'http://vt1.doubanio.com/201907290458/43412995353b45f5eeb2538d34db3b9f/view/movie/M/402430269.mp4',
               ),
               ViewVideoShowItem(
+                UniqueKey(),
                 picUrl:
                     "https://liangcang-material.alicdn.com/prod/upload/91df128bd3e04e87b63847b65e37207a.jpg",
                 title: "行走画报！威神V抱大葱帅炸",
@@ -69,6 +74,7 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                     'http://vt1.doubanio.com/201907290459/2791672f6b2f62f675131ad5297bcec6/view/movie/M/402420330.mp4',
               ),
               ViewVideoShowItem(
+                UniqueKey(),
                 picUrl:
                     "https://liangcang-material.alicdn.com/prod/upload/99d553b433b44a9a9cca686d97943d94.jpg",
                 title: "姜昆朱时茂追忆旧时光",

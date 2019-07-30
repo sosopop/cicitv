@@ -51,11 +51,11 @@ class _ViewVideoShowPanelState extends State<ViewVideoShowPanel> {
               ]),
               Column(
                 children: <Widget>[
-                  ViewVideoShowItem(
+                  ViewVideoShowItem(UniqueKey(),
                       picUrl:
                           "https://ykimg.alicdn.com/develop/image/2019-03-13/013cc9422f4c032737722edf1e6180f7.jpg",
                       title: "姚芊羽李建上演新农村创业"),
-                  ViewVideoShowItem(
+                  ViewVideoShowItem(UniqueKey(),
                       picUrl:
                           "https://liangcang-material.alicdn.com/prod/upload/9a0cd5d5b55746f5954211db3467d717.jpg",
                       title: "邓伦马思纯都市情感甜怼恋")
