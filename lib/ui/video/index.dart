@@ -28,23 +28,27 @@ class _IndexState extends State<VideoIndex> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: TabBar(
-            labelPadding: EdgeInsets.symmetric(horizontal: MyTheme.sz(10)),
-            indicatorSize: TabBarIndicatorSize.label,
-            isScrollable: true,
-            controller: _tabController,
-            labelStyle: TextStyle(
-                fontSize: MyTheme.sz(22), fontWeight: FontWeight.w600),
-            labelColor: MyTheme.color,
-            unselectedLabelColor: MyTheme.fontDeepColor,
-            unselectedLabelStyle: TextStyle(fontSize: MyTheme.sz(16)),
-            tabs: <Widget>[
-              Tab(text: "推荐"),
-              Tab(text: "主播"),
-              Tab(text: "韩日"),
-              Tab(text: "欧美"),
-              Tab(text: "武侠")
-            ],
+          title: Container(
+            width: double.infinity,
+            alignment: Alignment.centerLeft,
+            child: TabBar(
+              labelPadding: EdgeInsets.symmetric(horizontal: MyTheme.sz(10)),
+              indicatorSize: TabBarIndicatorSize.label,
+              isScrollable: true,
+              controller: _tabController,
+              labelStyle: TextStyle(
+                  fontSize: MyTheme.sz(22), fontWeight: FontWeight.w600),
+              labelColor: MyTheme.color,
+              unselectedLabelColor: MyTheme.fontDeepColor,
+              unselectedLabelStyle: TextStyle(fontSize: MyTheme.sz(16)),
+              tabs: <Widget>[
+                Tab(text: "推荐"),
+                Tab(text: "主播"),
+                Tab(text: "韩日"),
+                Tab(text: "欧美"),
+                Tab(text: "武侠")
+              ],
+            ),
           ),
           elevation: 0,
           backgroundColor: MyTheme.bgColor,

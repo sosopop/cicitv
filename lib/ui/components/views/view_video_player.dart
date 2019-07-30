@@ -14,88 +14,11 @@ enum VideoShowStatus {
   video,
 }
 
-enum __Command {
-  nothing,
-  dispose,
-  play,
-}
-
-typedef __ResetCallback = void Function();
-
 class SingleVideoController {
-  static __Command _command = __Command.nothing;
-
-  static bool running = false;
-  static String videoUrl;
-  static HashMap<Key, _ViewVideoPlayerState> _resetMap =
-      HashMap<Key, _ViewVideoPlayerState>();
-
-  //释放动作
-  static Future<void> _actionDispose() async {
-    if (_videoPlayerController != null) {
-      await _videoPlayerController.dispose();
-      _videoPlayerController = null;
-    }
-  }
-
-  //播放
-  static Future<void> _actionPlay() async {
-    if (videoUrl != null) {
-      _videoPlayerController = VideoPlayerController.network(videoUrl);
-      await _videoPlayerController.initialize();
-      await _videoPlayerController.play();
-    }
-  }
-
-  //通过状态机同步数据,数据为命令
-  static void run() async {
-    if (running) {
-      return;
-    }
-    running = true;
-    try {
-      while (_command != __Command.nothing) {
-        //使用command作为状态机传入数据，_command后面可能会被冲掉。
-        __Command command = _command;
-        _command = __Command.nothing;
-
-        debugPrint('cmd:$command');
-        switch (command) {
-          case __Command.dispose:
-            {
-              await _actionDispose();
-            }
-            break;
-          case __Command.play:
-            {
-              await _actionDispose();
-              await _actionPlay();
-            }
-            break;
-          default:
-        }
-      }
-    } catch (e) {
-      debugPrint('RUN ERROR: $e');
-    }
-    running = false;
-  }
-
-  static Future<void> startPlay(
-      Key id, String videoUrl, _ViewVideoPlayerState state) async {
-    debugPrint('method startPlay:$videoUrl');
-    SingleVideoController.videoUrl = videoUrl;
-    _command = __Command.play;
-    _resetMap.forEach((k, v) {
-      if (k != id) {}
-    });
-    _resetMap.clear();
-    _resetMap[id] = state;
-    run();
-  }
-
-  static VideoPlayerController _videoPlayerController;
-  static VideoPlayerController _advPlayerController;
+  static VideoPlayerController videoController;
+  static VideoPlayerController adverController;
+  static _ViewVideoPlayerState currentState;
+  static Key currentKey;
 }
 
 class ViewVideoPlayer extends StatefulWidget {
@@ -118,6 +41,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   _ViewVideoPlayerState();
 
   VideoShowStatus status = VideoShowStatus.cover;
+  VideoPlayerController videoController;
 
   @override
   void initState() {
@@ -126,6 +50,9 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
 
   @override
   void dispose() {
+    if (SingleVideoController.videoController == videoController)
+      SingleVideoController.videoController = null;
+    videoController?.dispose();
     super.dispose();
   }
 
@@ -148,19 +75,50 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
     });
   }
 
+  videoPlay() async {
+    try {
+      //释放上个播放器
+      try {
+        if (SingleVideoController.videoController != null) {
+          if (SingleVideoController.currentState != this) {
+            await SingleVideoController.videoController.pause();
+            if (widget.key != SingleVideoController.currentKey) {
+              SingleVideoController.currentState.status = VideoShowStatus.cover;
+              SingleVideoController.currentState.setState(
+                () {},
+              );
+            }
+          }
+        }
+      } catch (e) {
+        debugPrint('$e');
+      }
+
+      if (videoController != null) {
+        await videoController.dispose();
+        videoController = null;
+      }
+      videoController = SingleVideoController.videoController =
+          VideoPlayerController.network(widget.videoUrl);
+      await videoController.initialize();
+      await videoController.play();
+
+      SingleVideoController.currentKey = widget.key;
+      SingleVideoController.currentState = this;
+      setState(
+        () {
+          status = VideoShowStatus.video;
+        },
+      );
+    } catch (e) {
+      debugPrint('$e');
+    }
+  }
+
   Widget _buildCover() {
     return GestureDetector(
-      onTap: () async {
-        await SingleVideoController.startPlay(
-          widget.key,
-          widget.videoUrl,
-          this,
-        );
-        setState(
-          () {
-            status = VideoShowStatus.video;
-          },
-        );
+      onTap: () {
+        videoPlay();
       },
       child: widget.coverBuilder != null ? widget.coverBuilder() : Container(),
     );
@@ -171,6 +129,6 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   }
 
   Widget _buildVideo() {
-    return VideoPlayer(SingleVideoController._videoPlayerController);
+    return VideoPlayer(SingleVideoController.videoController);
   }
 }
