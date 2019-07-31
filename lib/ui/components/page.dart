@@ -47,7 +47,7 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
             return false;
           },
           child: ListView(
-            padding: EdgeInsets.only(top: MyTheme.sz(10)),
+            padding: EdgeInsets.only(top: MyTheme.sz(0)),
             children: <Widget>[
               ViewVideoShowItem(
                 UniqueKey(),
@@ -55,7 +55,7 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                     "https://ykimg.alicdn.com/develop/image/2019-03-13/013cc9422f4c032737722edf1e6180f7.jpg",
                 title: "姚芊羽李建上演新农村创业",
                 videoUrl:
-                    'http://vt1.doubanio.com/201907282221/89914aee4053b2b45458a8b94b6a8e92/view/movie/M/402400540.mp4',
+                    'https://mp4.vjshi.com/2019-07-30/7c2674b6f15c206a2b3155072d477255.mp4',
               ),
               ViewVideoShowItem(
                 UniqueKey(),
@@ -63,7 +63,7 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                     "https://liangcang-material.alicdn.com/prod/upload/9a0cd5d5b55746f5954211db3467d717.jpg",
                 title: "邓伦马思纯都市情感甜怼恋",
                 videoUrl:
-                    'http://vt1.doubanio.com/201907290458/43412995353b45f5eeb2538d34db3b9f/view/movie/M/402430269.mp4',
+                    'https://mp4.vjshi.com/2017-08-09/1b2c78c7296655d1c47faa6c765555c7.mp4',
               ),
               ViewVideoShowItem(
                 UniqueKey(),
@@ -104,7 +104,7 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
     } else {
       return Center(
         child: ListView(
-          padding: EdgeInsets.only(top: MyTheme.sz(10)),
+          padding: EdgeInsets.only(top: MyTheme.sz(0)),
           children: <Widget>[
             ViewBannerSwiper(),
             ViewTwoColPanel(),
