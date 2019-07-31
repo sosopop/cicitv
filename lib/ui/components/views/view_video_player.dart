@@ -8,6 +8,56 @@ import 'dart:collection';
 import 'package:video_player/video_player.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:cicitv/common/time_helper.dart';
+import 'package:flutter/services.dart';
+import 'dart:io';
+
+typedef Widget AnimationPageBuilder(BuildContext context,
+    Animation<double> animation, Animation<double> secondaryAnimation);
+
+class DialogRoute<T> extends PageRoute<T> {
+  final Color barrierColor;
+  final String barrierLabel;
+  final bool maintainState;
+  final Duration transitionDuration;
+  final AnimationPageBuilder builder;
+
+  DialogRoute({
+    this.barrierColor = const Color(0x44FFFFFF),
+    this.barrierLabel = "full",
+    this.maintainState = true,
+    this.transitionDuration = const Duration(milliseconds: 300),
+    @required this.builder,
+  }) : assert(barrierColor != Colors.transparent,
+            "The barrierColor must not be transparent.");
+
+  @override
+  Widget buildPage(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation) {
+    return builder(context, animation, secondaryAnimation);
+  }
+}
+
+class FullScreenRoute<T> extends DialogRoute<T> {
+  FullScreenRoute({WidgetBuilder builder})
+      : super(builder: (ctx, a, s) => fullScreenBuilder(ctx, builder, a, s));
+
+  static Widget fullScreenBuilder(
+    BuildContext context,
+    WidgetBuilder builder,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+  ) {
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (BuildContext context, Widget child) {
+        return Opacity(
+          opacity: animation.value,
+          child: builder(context),
+        );
+      },
+    );
+  }
+}
 
 enum VideoShowStatus {
   cover,
@@ -33,7 +83,7 @@ class ViewVideoPlayer extends StatefulWidget {
     this.videoUrl,
     this.coverBuilder,
     this.advUrl,
-    this.fullscreen,
+    this.fullscreen = false,
   }) : super(key: id);
 
   @override
@@ -54,6 +104,14 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   @override
   void initState() {
     super.initState();
+    if (widget.fullscreen) {
+      SystemChrome.setEnabledSystemUIOverlays([]).then((_) {
+        return SystemChrome.setPreferredOrientations([
+          DeviceOrientation.landscapeLeft,
+          DeviceOrientation.landscapeRight,
+        ]);
+      });
+    }
   }
 
   @override
@@ -130,9 +188,11 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
     if (isPlay()) {
       //不加timer视频播放会越来越卡，还不知道原因
       Timer(Duration(milliseconds: 100), () {
-        videoController.position.then((duration) {
-          position = duration;
-        });
+        if (isPlay()) {
+          videoController.position.then((duration) {
+            position = duration;
+          });
+        }
       });
     }
     setState(() {});
@@ -408,11 +468,48 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
     );
   }
 
+  _showFullScreen() {
+    if (!widget.fullscreen) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Material(
+            child: ViewVideoPlayer(
+              widget.key,
+              videoUrl: widget.videoUrl,
+              coverBuilder: widget.coverBuilder,
+              advUrl: widget.advUrl,
+              fullscreen: true,
+            ),
+          ),
+        ),
+      ).then((_) {
+        return SystemChrome.setPreferredOrientations([
+          DeviceOrientation.portraitUp,
+          DeviceOrientation.portraitDown,
+        ]);
+      }).then((_) {
+        return SystemChrome.restoreSystemUIOverlays();
+      }).then((_) {
+        SystemChrome.setEnabledSystemUIOverlays(const [
+          SystemUiOverlay.top,
+          SystemUiOverlay.bottom,
+        ]);
+      });
+    } else {
+      Navigator.pop(context);
+    }
+  }
+
   Widget _buildCtrlBarFullScreen() {
-    Icon playIcon = Icon(Icons.fullscreen, color: Colors.white);
+    Icon fullIcon = Icon(
+        widget.fullscreen ? Icons.fullscreen_exit : Icons.fullscreen,
+        color: Colors.white);
     return IconButton(
-      onPressed: () {},
-      icon: playIcon,
+      onPressed: () {
+        _showFullScreen();
+      },
+      icon: fullIcon,
     );
   }
 
@@ -468,12 +565,15 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
         }
         setState(() {});
       },
-      child: Stack(
-        children: <Widget>[
-          VideoPlayer(SingleVideoController.videoController),
-          _buildVideoController(),
-          _buildStatusView(),
-        ],
+      child: Container(
+        color: Colors.black,
+        child: Stack(
+          children: <Widget>[
+            VideoPlayer(SingleVideoController.videoController),
+            _buildVideoController(),
+            _buildStatusView(),
+          ],
+        ),
       ),
     );
   }
