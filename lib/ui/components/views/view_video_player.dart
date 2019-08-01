@@ -337,10 +337,15 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
     }
   }
 
+  allPlay() {
+    if (adverDisposing || videoDisposing) return;
+    clean();
+    adPlay();
+    videoPlay();
+  }
+
   adPlay() async {
     try {
-      if (adverDisposing) return;
-      clean();
       _state.adplayComplete = false;
       _state.videoInitComplete = false;
 
@@ -371,8 +376,6 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   videoPlay() async {
     try {
       //释放上个播放器
-      if (videoDisposing) return;
-      clean();
       print('@@@ video clean success');
 
       _state.videoController = SingleVideoController.videoController =
@@ -410,8 +413,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
             _state.pause = false;
             _state.videoController.play();
           } else {
-            videoPlay();
-            adPlay();
+            allPlay();
           }
         }
         setState(() {});
@@ -433,8 +435,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   Widget _buildCover() {
     return GestureDetector(
       onTap: () {
-        adPlay();
-        videoPlay();
+        allPlay();
       },
       child: widget.coverBuilder != null ? widget.coverBuilder() : Container(),
     );
