@@ -77,8 +77,6 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   //VideoShowStatus status = VideoShowStatus.cover;
   bool showBar = false;
   bool playerValid = false;
-  //缓存当前时间位置
-  Duration position = Duration(seconds: 0);
 
   //隐藏控制栏的定时器
   Timer showCtrlTimer;
@@ -92,15 +90,8 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   bool videoDisposing = false;
   bool adverDisposing = false;
 
-  void startProgressTime() {
-    if (progressTimer == null) {
-      progressTimer = Timer.periodic(Duration(seconds: 1), progressCallback);
-    }
-  }
-
   void restorePlayStatus() {
     if (_state.videoController != null) {
-      startProgressTime();
       _state.videoController.removeListener(videoListener);
       _state.videoController.addListener(videoListener);
     }
@@ -131,22 +122,6 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
     super.dispose();
   }
 
-  progressCallback(timer) {
-    if (mounted) {
-      if (isPlay()) {
-        print("progressCallback");
-        _state.videoController.position.then(
-          (duration) {
-            if (mounted) {
-              position = duration;
-            }
-          },
-        );
-      }
-      setState(() {});
-    }
-  }
-
   void closeTimer() {
     showCtrlTimer?.cancel();
     showCtrlTimer = null;
@@ -170,6 +145,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
         setState(() {
           disposeVideoController.pause();
           Timer(Duration(milliseconds: 500), () {
+            print('@@@ video release ref:${_state.ref}');
             disposeVideoController.dispose().then((_) {
               videoDisposing = false;
             }).catchError((e) {
@@ -229,8 +205,10 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
       if (_state.videoController.value.hasError) {
         print('${_state.videoController.value.errorDescription}');
         destoryVideoPlayer();
+
         return;
       }
+      setState(() {});
     }
   }
 
@@ -269,7 +247,6 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
     //释放上个播放器
     playerValid = false;
     lastProgressPos = 0;
-    position = Duration(seconds: 0);
     lastAdverRelease();
     lastPlayerRelease();
     adverRelease();
@@ -290,7 +267,9 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
         releaseController.removeListener(adverListener);
         releaseController.pause();
         Future.delayed(Duration(milliseconds: 500)).then((_) {
-          releaseController.dispose();
+          print('@@@ adv release ref:${_state.ref}');
+          return releaseController.dispose();
+        }).then((_) {
           adverDisposing = false;
         }).catchError((_) {
           adverDisposing = false;
@@ -388,7 +367,6 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
       _state.videoController.addListener(videoListener);
       _state.videoController.initialize().then((_) {
         print('@@@ video init success');
-        startProgressTime();
 
         playerValid = true;
         _state.videoInitComplete = true;
@@ -492,7 +470,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
     double value = 0;
     try {
       if (isPlay()) {
-        value = position.inMilliseconds /
+        value = _state.videoController.value.position.inMilliseconds /
             _state.videoController.value.duration.inMilliseconds;
       }
     } catch (e) {}
@@ -583,7 +561,8 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
       String totalTime = "";
       totalTime = TimeHelper.getTimeText(
           _state.videoController.value.duration.inSeconds.toDouble());
-      String curTime = TimeHelper.getTimeText(position.inSeconds.toDouble());
+      String curTime = TimeHelper.getTimeText(
+          _state.videoController.value.position.inSeconds.toDouble());
       showTime = curTime + ' / ' + totalTime;
     }
 
@@ -595,7 +574,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
     double total = 0;
     if (isPlay()) {
       if (_state.videoController.value.duration.inSeconds.toDouble() > 1) {
-        pos = position.inSeconds.toDouble();
+        pos = _state.videoController.value.position.inSeconds.toDouble();
         total = _state.videoController.value.duration.inSeconds.toDouble();
       }
     }
