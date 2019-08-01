@@ -344,6 +344,8 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
       _state.adplayComplete = false;
       _state.videoInitComplete = false;
 
+      print('@@@ advers clean success');
+
       File fileStream = await DefaultCacheManager().getSingleFile(widget.adUrl);
       SingleVideoController.adverController =
           _state.adverController = VideoPlayerController.file(fileStream);
@@ -352,7 +354,9 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
       setState(() {});
       _state.adverController.addListener(adverListener);
       _state.adverController.initialize().then((_) {
+        print('@@@ advers init success');
         adLastSeconds = _state.adverController.value.duration.inSeconds;
+        print('@@@ advers play');
         return _state.adverController.play();
       }).catchError((_) {
         //_state.status = VideoShowStatus.video;
@@ -369,21 +373,24 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
       //释放上个播放器
       if (videoDisposing) return;
       clean();
+      print('@@@ video clean success');
 
       _state.videoController = SingleVideoController.videoController =
           VideoPlayerController.network(widget.videoUrl);
-      _state.status = VideoShowStatus.video;
+      //_state.status = VideoShowStatus.video;
       SingleVideoController.currentState = this;
 
       _state.pause = false;
       setState(() {});
       _state.videoController.addListener(videoListener);
       _state.videoController.initialize().then((_) {
+        print('@@@ video init success');
         startProgressTime();
 
         playerValid = true;
         _state.videoInitComplete = true;
         if (_state.adplayComplete) {
+          print('@@@ video play');
           _state.videoController.play();
         }
         setState(() {});
@@ -402,8 +409,10 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
           if (_state.pause) {
             _state.pause = false;
             _state.videoController.play();
-          } else
+          } else {
+            videoPlay();
             adPlay();
+          }
         }
         setState(() {});
       },
@@ -658,7 +667,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
         ]);
       }).then((_) {
         if (mounted) {
-          _state.status = VideoShowStatus.video;
+          //_state.status = VideoShowStatus.video;
           setState(() {});
         }
       });
