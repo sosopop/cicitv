@@ -643,7 +643,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
         color: Colors.black,
         child: Stack(
           children: <Widget>[
-            VideoPlayer(SingleVideoController.videoController),
+            VideoPlayer(_state.videoController),
             _buildVideoController(),
             _buildStatusView(),
           ],
