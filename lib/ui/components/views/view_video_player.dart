@@ -10,60 +10,13 @@ import 'package:rxdart/rxdart.dart';
 import 'package:cicitv/common/time_helper.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 /**
  * chewie和videoplayer的问题，播放完毕后没法重播，seekto（ 0）后获取不到进度信息，如果设置looping的话，获取不到进度事件
  * 全屏状态后，如果非全屏的widget状态丢失，全屏状态的controller也会释放，导致异常
  * 多个播放器互斥问题
  */
-
-typedef Widget AnimationPageBuilder(BuildContext context,
-    Animation<double> animation, Animation<double> secondaryAnimation);
-
-class DialogRoute<T> extends PageRoute<T> {
-  final Color barrierColor;
-  final String barrierLabel;
-  final bool maintainState;
-  final Duration transitionDuration;
-  final AnimationPageBuilder builder;
-
-  DialogRoute({
-    this.barrierColor = const Color(0x44FFFFFF),
-    this.barrierLabel = "full",
-    this.maintainState = true,
-    this.transitionDuration = const Duration(milliseconds: 300),
-    @required this.builder,
-  }) : assert(barrierColor != Colors.transparent,
-            "The barrierColor must not be transparent.");
-
-  @override
-  Widget buildPage(BuildContext context, Animation<double> animation,
-      Animation<double> secondaryAnimation) {
-    return builder(context, animation, secondaryAnimation);
-  }
-}
-
-class FullScreenRoute<T> extends DialogRoute<T> {
-  FullScreenRoute({WidgetBuilder builder})
-      : super(builder: (ctx, a, s) => fullScreenBuilder(ctx, builder, a, s));
-
-  static Widget fullScreenBuilder(
-    BuildContext context,
-    WidgetBuilder builder,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-  ) {
-    return AnimatedBuilder(
-      animation: animation,
-      builder: (BuildContext context, Widget child) {
-        return Opacity(
-          opacity: animation.value,
-          child: builder(context),
-        );
-      },
-    );
-  }
-}
 
 enum VideoShowStatus {
   cover,
@@ -154,7 +107,6 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
     print(
         "key:${widget.key},fullscreen:${widget.fullscreen} @@@@@@@@@@@@@@@@@@@@@@@,initState");
     super.initState();
-
     restorePlayStatus();
   }
 
@@ -174,6 +126,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   }
 
   progressCallback(timer) {
+    return;
     if (mounted) {
       if (isPlay()) {
         print("progressCallback");
@@ -315,6 +268,39 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
     }
   }
 
+  adPlay() async {
+    try {
+      //释放上个播放器
+      if (disposing) return;
+      playerValid = false;
+      lastProgressPos = 0;
+      position = Duration(seconds: 0);
+      lastPlayerRelease();
+      destoryVideoPlayer();
+
+      File fileStream = await DefaultCacheManager().getSingleFile(widget.adUrl);
+      _state.videoController = VideoPlayerController.file(fileStream);
+
+      status = VideoShowStatus.video;
+      SingleVideoController.currentState = this;
+
+      _state.pause = false;
+      setState(() {});
+      _state.videoController.addListener(videoListener);
+      _state.videoController.initialize().then((_) {
+        startProgressTime();
+
+        playerValid = true;
+        _state.videoController.play();
+        setState(() {});
+      }).catchError((_) {
+        status = VideoShowStatus.cover;
+      });
+    } catch (e) {
+      debugPrint('$e');
+    }
+  }
+
   videoPlay() async {
     try {
       //释放上个播放器
@@ -324,6 +310,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
       position = Duration(seconds: 0);
       lastPlayerRelease();
       destoryVideoPlayer();
+
       _state.videoController = SingleVideoController.videoController =
           VideoPlayerController.network(widget.videoUrl);
       status = VideoShowStatus.video;
@@ -375,7 +362,8 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   Widget _buildCover() {
     return GestureDetector(
       onTap: () {
-        videoPlay();
+        adPlay();
+        //videoPlay();
       },
       child: widget.coverBuilder != null ? widget.coverBuilder() : Container(),
     );
