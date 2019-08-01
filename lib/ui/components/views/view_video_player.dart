@@ -89,11 +89,16 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   double lastTotalPos = 0;
   bool videoDisposing = false;
   bool adverDisposing = false;
+  bool fullscreenState = false;
 
   void restorePlayStatus() {
     if (_state.videoController != null) {
       _state.videoController.removeListener(videoListener);
       _state.videoController.addListener(videoListener);
+    }
+    if (_state.adverController != null) {
+      _state.adverController.removeListener(adverListener);
+      _state.adverController.addListener(adverListener);
     }
   }
 
@@ -170,13 +175,15 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   }
 
   Widget _buildChild() {
-    switch (_state.status) {
-      case VideoShowStatus.cover:
-        return _buildCover();
-      case VideoShowStatus.adver:
-        return _buildAdv();
-      case VideoShowStatus.video:
-        return _buildVideo();
+    if (!fullscreenState) {
+      switch (_state.status) {
+        case VideoShowStatus.cover:
+          return _buildCover();
+        case VideoShowStatus.adver:
+          return _buildAdv();
+        case VideoShowStatus.video:
+          return _buildVideo();
+      }
     }
     return Container();
   }
@@ -319,7 +326,12 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   allPlay() {
     if (adverDisposing || videoDisposing) return;
     clean();
-    adPlay();
+    if (widget.adUrl.isEmpty) {
+      _state.adplayComplete = true;
+      _state.status = VideoShowStatus.video;
+    } else {
+      adPlay();
+    }
     videoPlay();
   }
 
@@ -427,6 +439,11 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
         child: Stack(
           children: <Widget>[
             VideoPlayer(_state.adverController),
+            Positioned(
+              bottom: MyTheme.sz(0),
+              right: MyTheme.sz(0),
+              child: _buildCtrlBarFullScreen(),
+            ),
             adLastSeconds == 0
                 ? Center(child: CircularProgressIndicator())
                 : Positioned(
@@ -543,9 +560,11 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
           if (_state.videoController == null) return;
           _state.pause = false;
           _state.videoController.play();
-        } else {
+        } else if (isPlaying()) {
           _state.pause = true;
           _state.videoController.pause();
+        } else {
+          allPlay();
         }
         setState(() {});
       },
@@ -617,12 +636,16 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
 
   _showFullScreen() {
     showCtrlTimer?.cancel();
-    _state.videoController.removeListener(videoListener);
+    if (_state.videoController != null)
+      _state.videoController.removeListener(videoListener);
+    if (_state.adverController != null)
+      _state.adverController.removeListener(adverListener);
 
     SystemChrome.setEnabledSystemUIOverlays([]);
     if (!widget.fullscreen) {
-      //_state.status = VideoShowStatus.cover;
-      //setState(() {});
+      //将当视频置为全屏状态，否则还原的时候会出现调用已经dispose的controller的问题。
+      fullscreenState = true;
+      setState(() {});
 
       Navigator.push(
         context,
@@ -647,7 +670,12 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
         ]);
       }).then((_) {
         if (mounted) {
-          //_state.status = VideoShowStatus.video;
+          if (_state.videoController != null)
+            _state.videoController.addListener(videoListener);
+          if (_state.adverController != null)
+            _state.adverController.addListener(adverListener);
+
+          fullscreenState = false;
           setState(() {});
         }
       });
