@@ -150,13 +150,6 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
     if (widget.fullscreen) {
       startProgressTime();
       _state.videoController?.addListener(videoListener);
-
-      SystemChrome.setEnabledSystemUIOverlays([]).then((_) {
-        return SystemChrome.setPreferredOrientations([
-          DeviceOrientation.landscapeLeft,
-          DeviceOrientation.landscapeRight,
-        ]);
-      });
     }
   }
 
@@ -550,12 +543,14 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   _showFullScreen() {
     showCtrlTimer?.cancel();
     _state.videoController.removeListener(videoListener);
-    Future.delayed(Duration(milliseconds: 100)).then((_) {
-      if (!widget.fullscreen) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => Material(
+
+    SystemChrome.setEnabledSystemUIOverlays([]);
+    if (!widget.fullscreen) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Material(
+            child: RotatedBox(
               child: ViewVideoPlayer(
                 videoUrl: widget.videoUrl,
                 coverBuilder: widget.coverBuilder,
@@ -563,26 +558,19 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
                 fullscreen: true,
                 state: _state,
               ),
+              quarterTurns: 1,
             ),
           ),
-        ).then((_) {
-          return SystemChrome.setPreferredOrientations([
-            DeviceOrientation.portraitUp,
-            DeviceOrientation.portraitDown,
-          ]);
-        }).then((_) {
-          return SystemChrome.restoreSystemUIOverlays();
-        }).then((_) {
-          SystemChrome.setEnabledSystemUIOverlays(const [
-            SystemUiOverlay.top,
-            SystemUiOverlay.bottom,
-          ]);
-          //_state.videoController.addListener(videoListener);
-        });
-      } else {
-        Navigator.pop(context);
-      }
-    });
+        ),
+      ).then((_) {
+        SystemChrome.setEnabledSystemUIOverlays(const [
+          SystemUiOverlay.top,
+          SystemUiOverlay.bottom,
+        ]);
+      });
+    } else {
+      Navigator.pop(context);
+    }
   }
 
   Widget _buildCtrlBarFullScreen() {
