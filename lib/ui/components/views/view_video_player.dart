@@ -91,7 +91,6 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   double lastTotalPos = 0;
   bool videoDisposing = false;
   bool adverDisposing = false;
-  VideoPlayerValue lastValue;
 
   void startProgressTime() {
     if (progressTimer == null) {
@@ -241,7 +240,6 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
       if (SingleVideoController.videoController != null) {
         if (SingleVideoController.currentState != null &&
             SingleVideoController.currentState._state != this._state) {
-          var disposeVideoController = SingleVideoController.videoController;
           SingleVideoController.videoController = null;
           var currentState = SingleVideoController.currentState;
           currentState.destoryVideoPlayer();
@@ -354,6 +352,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
       setState(() {});
       _state.adverController.addListener(adverListener);
       _state.adverController.initialize().then((_) {
+        adLastSeconds = _state.adverController.value.duration.inSeconds;
         return _state.adverController.play();
       }).catchError((_) {
         //_state.status = VideoShowStatus.video;
@@ -404,7 +403,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
             _state.pause = false;
             _state.videoController.play();
           } else
-            videoPlay();
+            adPlay();
         }
         setState(() {});
       },
@@ -440,6 +439,26 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
         child: Stack(
           children: <Widget>[
             VideoPlayer(_state.adverController),
+            adLastSeconds == 0
+                ? Center(child: CircularProgressIndicator())
+                : Positioned(
+                    top: MyTheme.sz(10),
+                    right: MyTheme.sz(10),
+                    child: ClipRRect(
+                      borderRadius:
+                          BorderRadius.all(Radius.circular(MyTheme.sz(3))),
+                      child: Container(
+                        padding: EdgeInsets.all(MyTheme.sz(5)),
+                        color: Colors.black54,
+                        child: Text(
+                          "$adLastSeconds秒",
+                          style: TextStyle(
+                              fontSize: MyTheme.sz(12),
+                              color: MyTheme.revFontColor),
+                        ),
+                      ),
+                    ),
+                  )
           ],
         ),
       ),
