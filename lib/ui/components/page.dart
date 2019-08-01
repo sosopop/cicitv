@@ -50,7 +50,6 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
             padding: EdgeInsets.only(top: MyTheme.sz(0)),
             children: <Widget>[
               ViewVideoShowItem(
-                UniqueKey(),
                 picUrl:
                     "https://ykimg.alicdn.com/develop/image/2019-03-13/013cc9422f4c032737722edf1e6180f7.jpg",
                 title: "姚芊羽李建上演新农村创业",

@@ -16,9 +16,14 @@ class ViewVideoShowItem extends StatelessWidget {
   final String title;
   final String targetUrl;
   final int playCount;
-  ViewVideoShowItem(Key id,
-      {this.picUrl, this.videoUrl, this.title, this.targetUrl, this.playCount})
-      : super(key: id);
+  ViewVideoShowItem(
+      {key,
+      this.picUrl,
+      this.videoUrl,
+      this.title,
+      this.targetUrl,
+      this.playCount})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

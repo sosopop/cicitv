@@ -144,6 +144,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
 
   @override
   void initState() {
+    _state.ref++;
     print(
         "key:${widget.key},fullscreen:${widget.fullscreen} @@@@@@@@@@@@@@@@@@@@@@@,initState");
     super.initState();
@@ -163,6 +164,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
 
   @override
   void dispose() {
+    _state.ref--;
     if (_state.ref == 0) {
       destoryVideoPlayer();
       print(
@@ -228,6 +230,15 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+        return true;
+      },
+      child: _buildChild(),
+    );
+  }
+
+  Widget _buildChild() {
     switch (status) {
       case VideoShowStatus.cover:
         return _buildCover();
@@ -544,9 +555,8 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   _showFullScreen() {
     showCtrlTimer?.cancel();
     _state.videoController.removeListener(videoListener);
-    Future.delayed(Duration(milliseconds: 200)).then((_) {
+    Future.delayed(Duration(milliseconds: 100)).then((_) {
       if (!widget.fullscreen) {
-        _state.ref++;
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -573,9 +583,9 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
             SystemUiOverlay.top,
             SystemUiOverlay.bottom,
           ]);
+          //_state.videoController.addListener(videoListener);
         });
       } else {
-        _state.ref--;
         Navigator.pop(context);
       }
     });
