@@ -56,7 +56,7 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                     "https://img1.doubanio.com/view/photo/m/public/p2557578729.webp",
                 title: "姚芊羽李建上演新农村创业",
                 videoUrl:
-                    'http://vt1.doubanio.com/201908012126/7c91a7ae82fd8f1fc534e4b6e74cb570/view/movie/M/402500477.mp4',
+                    'https://mp4.vjshi.com/2019-07-30/7c2674b6f15c206a2b3155072d477255.mp4',
               ),
               ViewVideoShowItem(
                 adUrl:

@@ -55,7 +55,6 @@ class _ShareState {
   VideoPlayerController adverController;
   int ref = 0;
   bool pause = false;
-  VideoShowStatus status = VideoShowStatus.cover;
 }
 
 class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
@@ -64,13 +63,14 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
       _state = _ShareState();
     } else {
       _state = stat;
+      status = VideoShowStatus.video;
       playerValid = true;
     }
   }
 
   _ShareState _state;
 
-  //VideoShowStatus status = VideoShowStatus.cover;
+  VideoShowStatus status = VideoShowStatus.cover;
   bool showBar = false;
   bool playerValid = false;
   //缓存当前时间位置
@@ -127,6 +127,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   }
 
   progressCallback(timer) {
+    return;
     if (mounted) {
       if (isPlay()) {
         print("progressCallback");
@@ -161,7 +162,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
         var disposeVideoController = _state.videoController;
         _state.videoController = null;
         disposeVideoController.removeListener(videoListener);
-        _state.status = VideoShowStatus.cover;
+        status = VideoShowStatus.cover;
         setState(() {
           disposeVideoController.pause();
           Timer(Duration(milliseconds: 500), () {
@@ -189,7 +190,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   }
 
   Widget _buildChild() {
-    switch (_state.status) {
+    switch (status) {
       case VideoShowStatus.cover:
         return _buildCover();
       case VideoShowStatus.adver:
@@ -240,7 +241,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
           var currentState = SingleVideoController.currentState;
           currentState._state.videoController = null;
           currentState.disposing = true;
-          currentState._state.status = VideoShowStatus.cover;
+          currentState.status = VideoShowStatus.cover;
           currentState.playerValid = false;
           disposeVideoController.removeListener(currentState.videoListener);
           currentState.setState(() {
@@ -270,6 +271,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
 
   clean() {
     //释放上个播放器
+    if (disposing) return;
     playerValid = false;
     lastProgressPos = 0;
     position = Duration(seconds: 0);
@@ -284,7 +286,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
       File fileStream = await DefaultCacheManager().getSingleFile(widget.adUrl);
       _state.adverController = VideoPlayerController.file(fileStream);
 
-      _state.status = VideoShowStatus.video;
+      status = VideoShowStatus.video;
       SingleVideoController.currentState = this;
 
       _state.pause = false;
@@ -297,7 +299,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
         _state.videoController.play();
         setState(() {});
       }).catchError((_) {
-        _state.status = VideoShowStatus.cover;
+        status = VideoShowStatus.cover;
       });
     } catch (e) {
       debugPrint('$e');
@@ -307,12 +309,10 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   videoPlay() async {
     try {
       //释放上个播放器
-      if (disposing) return;
-      clean();
 
       _state.videoController = SingleVideoController.videoController =
           VideoPlayerController.network(widget.videoUrl);
-      _state.status = VideoShowStatus.video;
+      status = VideoShowStatus.video;
       SingleVideoController.currentState = this;
 
       _state.pause = false;
@@ -325,7 +325,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
         _state.videoController.play();
         setState(() {});
       }).catchError((_) {
-        _state.status = VideoShowStatus.cover;
+        status = VideoShowStatus.cover;
       });
     } catch (e) {
       debugPrint('$e');
@@ -361,25 +361,15 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   Widget _buildCover() {
     return GestureDetector(
       onTap: () {
-        //adPlay();
-        videoPlay();
+        adPlay();
+        //videoPlay();
       },
       child: widget.coverBuilder != null ? widget.coverBuilder() : Container(),
     );
   }
 
   Widget _buildAdv() {
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-        color: Colors.black,
-        child: Stack(
-          children: <Widget>[
-            VideoPlayer(_state.adverController),
-          ],
-        ),
-      ),
-    );
+    return Container();
   }
 
   Widget _buildCentorStatus() {
@@ -549,8 +539,8 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
 
     SystemChrome.setEnabledSystemUIOverlays([]);
     if (!widget.fullscreen) {
-      //_state.status = VideoShowStatus.cover;
-      //setState(() {});
+      status = VideoShowStatus.cover;
+      setState(() {});
 
       Navigator.push(
         context,
@@ -575,7 +565,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
         ]);
       }).then((_) {
         if (mounted) {
-          _state.status = VideoShowStatus.video;
+          status = VideoShowStatus.video;
           setState(() {});
         }
       });
