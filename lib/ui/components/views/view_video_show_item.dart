@@ -37,7 +37,6 @@ class ViewVideoShowItem extends StatelessWidget {
     return AspectRatio(
       aspectRatio: 16 / 9,
       child: ViewVideoPlayer(
-        key,
         videoUrl: videoUrl,
         coverBuilder: _buildCover,
       ),

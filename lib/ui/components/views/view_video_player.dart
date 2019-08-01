@@ -75,7 +75,6 @@ class SingleVideoController {
   static VideoPlayerController videoController;
   static VideoPlayerController adverController;
   static _ViewVideoPlayerState currentState;
-  static Key currentKey;
 }
 
 class ViewVideoPlayer extends StatefulWidget {
@@ -85,14 +84,13 @@ class ViewVideoPlayer extends StatefulWidget {
   final bool fullscreen;
   final _ShareState state;
 
-  ViewVideoPlayer(
-    Key id, {
+  ViewVideoPlayer({
     this.state,
     this.videoUrl,
     this.coverBuilder,
     this.advUrl,
     this.fullscreen = false,
-  }) : super(key: id);
+  });
 
   @override
   State<ViewVideoPlayer> createState() => _ViewVideoPlayerState(state);
@@ -284,35 +282,33 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
     try {
       if (SingleVideoController.videoController != null) {
         if (SingleVideoController.currentState != this) {
-          if (widget.key != SingleVideoController.currentKey) {
-            var disposeVideoController = SingleVideoController.videoController;
-            SingleVideoController.videoController = null;
-            var currentState = SingleVideoController.currentState;
-            currentState._state.videoController = null;
-            currentState.disposing = true;
-            currentState = SingleVideoController.currentState;
-            currentState.status = VideoShowStatus.cover;
-            currentState.playerValid = false;
-            disposeVideoController.removeListener(currentState.videoListener);
-            currentState.setState(() {
-              disposeVideoController.pause();
-              Timer(Duration(milliseconds: 500), () {
-                disposeVideoController.dispose().then((_) {
-                  try {
-                    currentState.disposing = false;
-                  } catch (e) {
-                    debugPrint('$e');
-                  }
-                }).catchError((e) {
-                  try {
-                    currentState.disposing = false;
-                  } catch (e) {
-                    debugPrint('$e');
-                  }
-                });
+          var disposeVideoController = SingleVideoController.videoController;
+          SingleVideoController.videoController = null;
+          var currentState = SingleVideoController.currentState;
+          currentState._state.videoController = null;
+          currentState.disposing = true;
+          currentState = SingleVideoController.currentState;
+          currentState.status = VideoShowStatus.cover;
+          currentState.playerValid = false;
+          disposeVideoController.removeListener(currentState.videoListener);
+          currentState.setState(() {
+            disposeVideoController.pause();
+            Timer(Duration(milliseconds: 500), () {
+              disposeVideoController.dispose().then((_) {
+                try {
+                  currentState.disposing = false;
+                } catch (e) {
+                  debugPrint('$e');
+                }
+              }).catchError((e) {
+                try {
+                  currentState.disposing = false;
+                } catch (e) {
+                  debugPrint('$e');
+                }
               });
             });
-          }
+          });
         }
       }
     } catch (e) {
@@ -332,7 +328,6 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
       _state.videoController = SingleVideoController.videoController =
           VideoPlayerController.network(widget.videoUrl);
       status = VideoShowStatus.video;
-      SingleVideoController.currentKey = widget.key;
       SingleVideoController.currentState = this;
 
       pause = false;
@@ -562,7 +557,6 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
           MaterialPageRoute(
             builder: (context) => Material(
               child: ViewVideoPlayer(
-                widget.key,
                 videoUrl: widget.videoUrl,
                 coverBuilder: widget.coverBuilder,
                 advUrl: widget.advUrl,

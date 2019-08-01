@@ -56,30 +56,27 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                 videoUrl:
                     'https://mp4.vjshi.com/2019-07-30/7c2674b6f15c206a2b3155072d477255.mp4',
               ),
-              // ViewVideoShowItem(
-              //   UniqueKey(),
-              //   picUrl:
-              //       "https://liangcang-material.alicdn.com/prod/upload/9a0cd5d5b55746f5954211db3467d717.jpg",
-              //   title: "邓伦马思纯都市情感甜怼恋",
-              //   videoUrl:
-              //       'https://mp4.vjshi.com/2017-08-09/1b2c78c7296655d1c47faa6c765555c7.mp4',
-              // ),
-              // ViewVideoShowItem(
-              //   UniqueKey(),
-              //   picUrl:
-              //       "https://liangcang-material.alicdn.com/prod/upload/91df128bd3e04e87b63847b65e37207a.jpg",
-              //   title: "行走画报！威神V抱大葱帅炸",
-              //   videoUrl:
-              //       'http://vt1.doubanio.com/201907290459/2791672f6b2f62f675131ad5297bcec6/view/movie/M/402420330.mp4',
-              // ),
-              // ViewVideoShowItem(
-              //   UniqueKey(),
-              //   picUrl:
-              //       "https://liangcang-material.alicdn.com/prod/upload/99d553b433b44a9a9cca686d97943d94.jpg",
-              //   title: "姜昆朱时茂追忆旧时光",
-              //   videoUrl:
-              //       'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_30mb.mp4',
-              // ),
+              ViewVideoShowItem(
+                picUrl:
+                    "https://liangcang-material.alicdn.com/prod/upload/9a0cd5d5b55746f5954211db3467d717.jpg",
+                title: "邓伦马思纯都市情感甜怼恋",
+                videoUrl:
+                    'https://mp4.vjshi.com/2017-08-09/1b2c78c7296655d1c47faa6c765555c7.mp4',
+              ),
+              ViewVideoShowItem(
+                picUrl:
+                    "https://liangcang-material.alicdn.com/prod/upload/91df128bd3e04e87b63847b65e37207a.jpg",
+                title: "行走画报！威神V抱大葱帅炸",
+                videoUrl:
+                    'http://vt1.doubanio.com/201907290459/2791672f6b2f62f675131ad5297bcec6/view/movie/M/402420330.mp4',
+              ),
+              ViewVideoShowItem(
+                picUrl:
+                    "https://liangcang-material.alicdn.com/prod/upload/99d553b433b44a9a9cca686d97943d94.jpg",
+                title: "姜昆朱时茂追忆旧时光",
+                videoUrl:
+                    'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_30mb.mp4',
+              ),
               Container(
                   color: MyTheme.holderColor,
                   padding: EdgeInsets.all(MyTheme.sz(20)),
