@@ -675,6 +675,11 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
           if (_state.adverController != null)
             _state.adverController.addListener(adverListener);
 
+          //还原Single
+          SingleVideoController.adverController = _state.adverController;
+          SingleVideoController.videoController = _state.videoController;
+          SingleVideoController.currentState = this;
+
           fullscreenState = false;
           setState(() {});
         }
