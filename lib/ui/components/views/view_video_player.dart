@@ -56,6 +56,10 @@ class _ShareState {
   int ref = 0;
   bool pause = false;
   VideoShowStatus status = VideoShowStatus.cover;
+  //广告是否播放完毕
+  bool adplayComplete = false;
+  //视频是否播放完毕
+  bool videoInitComplete = false;
 }
 
 class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
@@ -85,7 +89,8 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   bool draging = false;
   double lastProgressPos = 0;
   double lastTotalPos = 0;
-  bool disposing = false;
+  bool videoDisposing = false;
+  bool adverDisposing = false;
   VideoPlayerValue lastValue;
 
   void startProgressTime() {
@@ -115,6 +120,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   void dispose() {
     _state.ref--;
     if (_state.ref == 0) {
+      adverRelease();
       destoryVideoPlayer();
       print(
           "key:${widget.key},fullscreen:${widget.fullscreen} @@@@@@@@@@@@@@@@@@@@@@@,state dispose");
@@ -157,7 +163,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
       SingleVideoController.videoController = null;
     if (_state.videoController != null) {
       try {
-        disposing = true;
+        videoDisposing = true;
         var disposeVideoController = _state.videoController;
         _state.videoController = null;
         disposeVideoController.removeListener(videoListener);
@@ -166,14 +172,14 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
           disposeVideoController.pause();
           Timer(Duration(milliseconds: 500), () {
             disposeVideoController.dispose().then((_) {
-              disposing = false;
+              videoDisposing = false;
             }).catchError((e) {
-              disposing = false;
+              videoDisposing = false;
             });
           });
         });
       } catch (e) {
-        disposing = false;
+        videoDisposing = false;
       }
     }
   }
@@ -238,29 +244,22 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
           var disposeVideoController = SingleVideoController.videoController;
           SingleVideoController.videoController = null;
           var currentState = SingleVideoController.currentState;
-          currentState._state.videoController = null;
-          currentState.disposing = true;
-          currentState._state.status = VideoShowStatus.cover;
-          currentState.playerValid = false;
-          disposeVideoController.removeListener(currentState.videoListener);
-          currentState.setState(() {
-            disposeVideoController.pause();
-            Timer(Duration(milliseconds: 500), () {
-              disposeVideoController.dispose().then((_) {
-                try {
-                  currentState.disposing = false;
-                } catch (e) {
-                  debugPrint('$e');
-                }
-              }).catchError((e) {
-                try {
-                  currentState.disposing = false;
-                } catch (e) {
-                  debugPrint('$e');
-                }
-              });
-            });
-          });
+          currentState.destoryVideoPlayer();
+        }
+      }
+    } catch (e) {
+      debugPrint('$e');
+    }
+  }
+
+  lastAdverRelease() {
+    //print("key:${widget.key}@@@@@@@@@@@@@@@@@@@@@@@,lastPlayerRelease");
+    try {
+      if (SingleVideoController.adverController != null) {
+        if (SingleVideoController.currentState != null &&
+            SingleVideoController.currentState._state != this._state) {
+          var currentState = SingleVideoController.currentState;
+          currentState.adverRelease();
         }
       }
     } catch (e) {
@@ -273,41 +272,103 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
     playerValid = false;
     lastProgressPos = 0;
     position = Duration(seconds: 0);
+    lastAdverRelease();
     lastPlayerRelease();
+    adverRelease();
     destoryVideoPlayer();
+  }
+
+  adverRelease() {
+    //释放自己
+    if (_state.adverController != null) {
+      try {
+        var releaseController = _state.adverController;
+        if (SingleVideoController.adverController == _state.adverController) {
+          SingleVideoController.adverController = null;
+        }
+        _state.adverController = null;
+        adverDisposing = true;
+
+        releaseController.removeListener(adverListener);
+        releaseController.pause();
+        Future.delayed(Duration(milliseconds: 500)).then((_) {
+          releaseController.dispose();
+          adverDisposing = false;
+        }).catchError((_) {
+          adverDisposing = false;
+        });
+      } catch (e) {
+        adverDisposing = false;
+        print('$e');
+      }
+    }
+  }
+
+  advToVideo() {
+    adverRelease();
+    if (_state.videoController != null) {
+      if (_state.videoInitComplete) {
+        _state.videoController.play();
+      }
+    }
+    _state.status = VideoShowStatus.video;
+    setState(() {});
+  }
+
+  int adLastSeconds = 0;
+  adverListener() {
+    if (mounted) {
+      if (_state.adverController.value.hasError) {
+        _state.adverController.removeListener(adverListener);
+      }
+      if (_state.adverController != null &&
+          _state.adverController.value != null &&
+          _state.adverController.value.initialized) {
+        if (_state.adverController.value.duration.inMilliseconds > 0 &&
+            _state.adverController.value.position.inMilliseconds > 0) {
+          if (_state.adverController.value.isPlaying) {
+            adLastSeconds = _state.adverController.value.duration.inSeconds -
+                _state.adverController.value.position.inSeconds;
+            setState(() {});
+          } else {
+            _state.adplayComplete = true;
+            advToVideo();
+          }
+        }
+      }
+    }
   }
 
   adPlay() async {
     try {
+      if (adverDisposing) return;
       clean();
+      _state.adplayComplete = false;
+      _state.videoInitComplete = false;
 
       File fileStream = await DefaultCacheManager().getSingleFile(widget.adUrl);
-      _state.adverController = VideoPlayerController.file(fileStream);
+      SingleVideoController.adverController =
+          _state.adverController = VideoPlayerController.file(fileStream);
+      _state.status = VideoShowStatus.adver;
 
-      _state.status = VideoShowStatus.video;
-      SingleVideoController.currentState = this;
-
-      _state.pause = false;
       setState(() {});
-      _state.videoController.addListener(videoListener);
-      _state.videoController.initialize().then((_) {
-        startProgressTime();
-
-        playerValid = true;
-        _state.videoController.play();
-        setState(() {});
+      _state.adverController.addListener(adverListener);
+      _state.adverController.initialize().then((_) {
+        return _state.adverController.play();
       }).catchError((_) {
-        _state.status = VideoShowStatus.cover;
+        //_state.status = VideoShowStatus.video;
+        advToVideo();
       });
     } catch (e) {
       debugPrint('$e');
+      advToVideo();
     }
   }
 
   videoPlay() async {
     try {
       //释放上个播放器
-      if (disposing) return;
+      if (videoDisposing) return;
       clean();
 
       _state.videoController = SingleVideoController.videoController =
@@ -322,7 +383,10 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
         startProgressTime();
 
         playerValid = true;
-        _state.videoController.play();
+        _state.videoInitComplete = true;
+        if (_state.adplayComplete) {
+          _state.videoController.play();
+        }
         setState(() {});
       }).catchError((_) {
         _state.status = VideoShowStatus.cover;
@@ -361,7 +425,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   Widget _buildCover() {
     return GestureDetector(
       onTap: () {
-        //adPlay();
+        adPlay();
         videoPlay();
       },
       child: widget.coverBuilder != null ? widget.coverBuilder() : Container(),

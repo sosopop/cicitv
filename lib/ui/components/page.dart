@@ -51,7 +51,7 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
             children: <Widget>[
               ViewVideoShowItem(
                 adUrl:
-                    "https://mp4.vjshi.com/2019-07-30/7c2674b6f15c206a2b3155072d477255.mp4",
+                    "https://mp4.vjshi.com/2018-03-25/97eeb9c48ca02676a369a445606ed850.mp4",
                 picUrl:
                     "https://img1.doubanio.com/view/photo/m/public/p2557578729.webp",
                 title: "姚芊羽李建上演新农村创业",
@@ -60,7 +60,7 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
               ),
               ViewVideoShowItem(
                 adUrl:
-                    "https://mp4.vjshi.com/2019-07-30/7c2674b6f15c206a2b3155072d477255.mp4",
+                    "https://mp4.vjshi.com/2018-03-25/97eeb9c48ca02676a369a445606ed850.mp4",
                 picUrl:
                     "https://img3.doubanio.com/view/photo/l/public/p2560501335.webp",
                 title: "邓伦马思纯都市情感甜怼恋",
@@ -69,7 +69,7 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
               ),
               ViewVideoShowItem(
                 adUrl:
-                    "https://mp4.vjshi.com/2019-07-30/7c2674b6f15c206a2b3155072d477255.mp4",
+                    "https://mp4.vjshi.com/2018-03-25/97eeb9c48ca02676a369a445606ed850.mp4",
                 picUrl:
                     "https://liangcang-material.alicdn.com/prod/upload/91df128bd3e04e87b63847b65e37207a.jpg",
                 title: "行走画报！威神V抱大葱帅炸",
@@ -78,7 +78,7 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
               ),
               ViewVideoShowItem(
                 adUrl:
-                    "https://mp4.vjshi.com/2019-07-30/7c2674b6f15c206a2b3155072d477255.mp4",
+                    "https://mp4.vjshi.com/2018-03-25/97eeb9c48ca02676a369a445606ed850.mp4",
                 picUrl:
                     "https://img3.doubanio.com/view/photo/l/public/p2548088320.webp",
                 title: "姜昆朱时茂追忆旧时光",
@@ -87,7 +87,7 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
               ),
               ViewVideoShowItem(
                 adUrl:
-                    "https://mp4.vjshi.com/2019-07-30/7c2674b6f15c206a2b3155072d477255.mp4",
+                    "https://mp4.vjshi.com/2018-03-25/97eeb9c48ca02676a369a445606ed850.mp4",
                 picUrl: "https://r1.ykimg.com/050C0000589C166967BC3C4AA003DCB8",
                 title: "国外m3u8测试视频",
                 videoUrl:
@@ -95,7 +95,7 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
               ),
               ViewVideoShowItem(
                 adUrl:
-                    "https://mp4.vjshi.com/2019-07-30/7c2674b6f15c206a2b3155072d477255.mp4",
+                    "https://mp4.vjshi.com/2018-03-25/97eeb9c48ca02676a369a445606ed850.mp4",
                 picUrl: "https://r1.ykimg.com/050C00005CC03170ADA7B2A3F20D7F40",
                 title: "国内m3u8测试视频",
                 videoUrl:
