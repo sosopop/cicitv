@@ -12,6 +12,7 @@ import 'package:flutter/foundation.dart';
 
 class ViewVideoShowItem extends StatelessWidget {
   final String picUrl;
+  final String adUrl;
   final String videoUrl;
   final String title;
   final String targetUrl;
@@ -19,6 +20,7 @@ class ViewVideoShowItem extends StatelessWidget {
   ViewVideoShowItem(
       {key,
       this.picUrl,
+      this.adUrl,
       this.videoUrl,
       this.title,
       this.targetUrl,
@@ -37,6 +39,7 @@ class ViewVideoShowItem extends StatelessWidget {
     return AspectRatio(
       aspectRatio: 16 / 9,
       child: ViewVideoPlayer(
+        adUrl: adUrl,
         videoUrl: videoUrl,
         coverBuilder: _buildCover,
       ),

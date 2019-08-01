@@ -50,20 +50,26 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
             padding: EdgeInsets.only(top: MyTheme.sz(0)),
             children: <Widget>[
               ViewVideoShowItem(
+                adUrl:
+                    "https://mp4.vjshi.com/2019-07-30/7c2674b6f15c206a2b3155072d477255.mp4",
                 picUrl:
-                    "https://ykimg.alicdn.com/develop/image/2019-03-13/013cc9422f4c032737722edf1e6180f7.jpg",
+                    "https://img1.doubanio.com/view/photo/m/public/p2557578729.webp",
                 title: "姚芊羽李建上演新农村创业",
                 videoUrl:
-                    'https://mp4.vjshi.com/2019-07-30/7c2674b6f15c206a2b3155072d477255.mp4',
+                    'http://vt1.doubanio.com/201908012126/7c91a7ae82fd8f1fc534e4b6e74cb570/view/movie/M/402500477.mp4',
               ),
               ViewVideoShowItem(
+                adUrl:
+                    "https://mp4.vjshi.com/2019-07-30/7c2674b6f15c206a2b3155072d477255.mp4",
                 picUrl:
-                    "https://liangcang-material.alicdn.com/prod/upload/9a0cd5d5b55746f5954211db3467d717.jpg",
+                    "https://img3.doubanio.com/view/photo/l/public/p2560501335.webp",
                 title: "邓伦马思纯都市情感甜怼恋",
                 videoUrl:
                     'https://mp4.vjshi.com/2017-08-09/1b2c78c7296655d1c47faa6c765555c7.mp4',
               ),
               ViewVideoShowItem(
+                adUrl:
+                    "https://mp4.vjshi.com/2019-07-30/7c2674b6f15c206a2b3155072d477255.mp4",
                 picUrl:
                     "https://liangcang-material.alicdn.com/prod/upload/91df128bd3e04e87b63847b65e37207a.jpg",
                 title: "行走画报！威神V抱大葱帅炸",
@@ -71,11 +77,29 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                     'http://vt1.doubanio.com/201907290459/2791672f6b2f62f675131ad5297bcec6/view/movie/M/402420330.mp4',
               ),
               ViewVideoShowItem(
+                adUrl:
+                    "https://mp4.vjshi.com/2019-07-30/7c2674b6f15c206a2b3155072d477255.mp4",
                 picUrl:
-                    "https://liangcang-material.alicdn.com/prod/upload/99d553b433b44a9a9cca686d97943d94.jpg",
+                    "https://img3.doubanio.com/view/photo/l/public/p2548088320.webp",
                 title: "姜昆朱时茂追忆旧时光",
                 videoUrl:
                     'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_30mb.mp4',
+              ),
+              ViewVideoShowItem(
+                adUrl:
+                    "https://mp4.vjshi.com/2019-07-30/7c2674b6f15c206a2b3155072d477255.mp4",
+                picUrl: "https://r1.ykimg.com/050C0000589C166967BC3C4AA003DCB8",
+                title: "国外m3u8测试视频",
+                videoUrl:
+                    'https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8',
+              ),
+              ViewVideoShowItem(
+                adUrl:
+                    "https://mp4.vjshi.com/2019-07-30/7c2674b6f15c206a2b3155072d477255.mp4",
+                picUrl: "https://r1.ykimg.com/050C00005CC03170ADA7B2A3F20D7F40",
+                title: "国内m3u8测试视频",
+                videoUrl:
+                    'http://hls.videocc.net/ce0812b122/c/ce0812b1223bb292333a4ce6e092a949_3.m3u8',
               ),
               Container(
                   color: MyTheme.holderColor,

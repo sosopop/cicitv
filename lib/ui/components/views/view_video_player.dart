@@ -80,7 +80,7 @@ class SingleVideoController {
 class ViewVideoPlayer extends StatefulWidget {
   final String videoUrl;
   final Function coverBuilder;
-  final String advUrl;
+  final String adUrl;
   final bool fullscreen;
   final _ShareState state;
 
@@ -88,7 +88,7 @@ class ViewVideoPlayer extends StatefulWidget {
     this.state,
     this.videoUrl,
     this.coverBuilder,
-    this.advUrl,
+    this.adUrl,
     this.fullscreen = false,
   });
 
@@ -100,6 +100,7 @@ class _ShareState {
   _ShareState();
   VideoPlayerController videoController;
   int ref = 0;
+  bool pause = false;
 }
 
 class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
@@ -116,7 +117,6 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   _ShareState _state;
 
   VideoShowStatus status = VideoShowStatus.cover;
-  bool pause = false;
   bool showBar = false;
   bool playerValid = false;
   //缓存当前时间位置
@@ -140,6 +140,14 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
     }
   }
 
+  void restorePlayStatus() {
+    if (_state.videoController != null) {
+      startProgressTime();
+      _state.videoController.removeListener(videoListener);
+      _state.videoController.addListener(videoListener);
+    }
+  }
+
   @override
   void initState() {
     _state.ref++;
@@ -147,10 +155,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
         "key:${widget.key},fullscreen:${widget.fullscreen} @@@@@@@@@@@@@@@@@@@@@@@,initState");
     super.initState();
 
-    if (widget.fullscreen) {
-      startProgressTime();
-      _state.videoController?.addListener(videoListener);
-    }
+    restorePlayStatus();
   }
 
   @override
@@ -171,6 +176,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   progressCallback(timer) {
     if (mounted) {
       if (isPlay()) {
+        print("progressCallback");
         _state.videoController.position.then(
           (duration) {
             if (mounted) {
@@ -255,7 +261,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
         _state.videoController != null &&
         _state.videoController.value != null &&
         _state.videoController.value.duration != null &&
-        (_state.videoController.value.isPlaying || pause);
+        (_state.videoController.value.isPlaying || _state.pause);
   }
 
   videoListener() {
@@ -274,13 +280,13 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
     //print("key:${widget.key}@@@@@@@@@@@@@@@@@@@@@@@,lastPlayerRelease");
     try {
       if (SingleVideoController.videoController != null) {
-        if (SingleVideoController.currentState != this) {
+        if (SingleVideoController.currentState != null &&
+            SingleVideoController.currentState._state != this._state) {
           var disposeVideoController = SingleVideoController.videoController;
           SingleVideoController.videoController = null;
           var currentState = SingleVideoController.currentState;
           currentState._state.videoController = null;
           currentState.disposing = true;
-          currentState = SingleVideoController.currentState;
           currentState.status = VideoShowStatus.cover;
           currentState.playerValid = false;
           disposeVideoController.removeListener(currentState.videoListener);
@@ -323,7 +329,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
       status = VideoShowStatus.video;
       SingleVideoController.currentState = this;
 
-      pause = false;
+      _state.pause = false;
       setState(() {});
       _state.videoController.addListener(videoListener);
       _state.videoController.initialize().then((_) {
@@ -344,8 +350,8 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
     return GestureDetector(
       onTap: () {
         if (_state.videoController != null) {
-          if (pause) {
-            pause = false;
+          if (_state.pause) {
+            _state.pause = false;
             _state.videoController.play();
           } else
             videoPlay();
@@ -452,7 +458,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   }
 
   bool shouldShowCtrlBar() {
-    return (showBar && isPlay());
+    return ((showBar || _state.pause) && isPlay()) || !isPlay();
   }
 
   Widget _buildCtrlBarPlayIcon() {
@@ -465,12 +471,12 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
     return IconButton(
       onPressed: () {
         _showCtrlBar();
-        if (pause) {
+        if (_state.pause) {
           if (_state.videoController == null) return;
-          pause = false;
+          _state.pause = false;
           _state.videoController.play();
         } else {
-          pause = true;
+          _state.pause = true;
           _state.videoController.pause();
         }
         setState(() {});
@@ -511,7 +517,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
       lastTotalPos = total;
       lastProgressPos = pos;
     }
-
+    if (lastTotalPos == 0) lastTotalPos = 1;
     return Expanded(
       child: Slider(
         divisions: lastTotalPos.toInt(),
@@ -546,6 +552,9 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
 
     SystemChrome.setEnabledSystemUIOverlays([]);
     if (!widget.fullscreen) {
+      status = VideoShowStatus.cover;
+      setState(() {});
+
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -554,7 +563,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
               child: ViewVideoPlayer(
                 videoUrl: widget.videoUrl,
                 coverBuilder: widget.coverBuilder,
-                advUrl: widget.advUrl,
+                adUrl: widget.adUrl,
                 fullscreen: true,
                 state: _state,
               ),
@@ -563,10 +572,15 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
           ),
         ),
       ).then((_) {
-        SystemChrome.setEnabledSystemUIOverlays(const [
+        return SystemChrome.setEnabledSystemUIOverlays(const [
           SystemUiOverlay.top,
           SystemUiOverlay.bottom,
         ]);
+      }).then((_) {
+        if (mounted) {
+          status = VideoShowStatus.video;
+          setState(() {});
+        }
       });
     } else {
       Navigator.pop(context);
@@ -630,7 +644,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
       onDoubleTap: () {
         if (isPlay()) {
           if (isPlaying()) {
-            pause = true;
+            _state.pause = true;
             _state.videoController.pause();
           } else
             _state.videoController.play();
