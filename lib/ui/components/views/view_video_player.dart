@@ -11,6 +11,12 @@ import 'package:cicitv/common/time_helper.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
 
+/**
+ * chewie和videoplayer的问题，播放完毕后没法重播，seekto（ 0）后获取不到进度信息，如果设置looping的话，获取不到进度事件
+ * 全屏状态后，如果非全屏的widget状态丢失，全屏状态的controller也会释放，导致异常
+ * 多个播放器互斥问题
+ */
+
 typedef Widget AnimationPageBuilder(BuildContext context,
     Animation<double> animation, Animation<double> secondaryAnimation);
 
@@ -76,10 +82,12 @@ class ViewVideoPlayer extends StatefulWidget {
   final String videoUrl;
   final Function coverBuilder;
   final String advUrl;
-  bool fullscreen;
+  final bool fullscreen;
+  final _ShareState state;
 
   ViewVideoPlayer(
     Key id, {
+    this.state,
     this.videoUrl,
     this.coverBuilder,
     this.advUrl,
@@ -87,24 +95,63 @@ class ViewVideoPlayer extends StatefulWidget {
   }) : super(key: id);
 
   @override
-  State<ViewVideoPlayer> createState() => _ViewVideoPlayerState();
+  State<ViewVideoPlayer> createState() => _ViewVideoPlayerState(state);
+}
+
+class _ShareState {
+  _ShareState();
+  VideoPlayerController videoController;
+  int ref = 0;
 }
 
 class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
-  _ViewVideoPlayerState();
+  _ViewVideoPlayerState(stat) {
+    if (stat == null) {
+      _state = _ShareState();
+    } else {
+      _state = stat;
+      status = VideoShowStatus.video;
+      playerValid = true;
+    }
+  }
+
+  _ShareState _state;
 
   VideoShowStatus status = VideoShowStatus.cover;
-  VideoPlayerController videoController;
   bool pause = false;
   bool showBar = false;
   bool playerValid = false;
-  bool disposing = false;
+  //缓存当前时间位置
   Duration position = Duration(seconds: 0);
+
+  //隐藏控制栏的定时器
+  Timer showCtrlTimer;
+  Timer progressTimer;
+  int showCount = 5;
+  //拖拽使用
+  double dragPos = 0;
+  bool draging = false;
+  double lastProgressPos = 0;
+  double lastTotalPos = 0;
+  bool disposing = false;
+  VideoPlayerValue lastValue;
+
+  void startProgressTime() {
+    if (progressTimer == null) {
+      progressTimer = Timer.periodic(Duration(seconds: 1), progressCallback);
+    }
+  }
 
   @override
   void initState() {
+    print(
+        "key:${widget.key},fullscreen:${widget.fullscreen} @@@@@@@@@@@@@@@@@@@@@@@,initState");
     super.initState();
+
     if (widget.fullscreen) {
+      startProgressTime();
+      _state.videoController?.addListener(videoListener);
+
       SystemChrome.setEnabledSystemUIOverlays([]).then((_) {
         return SystemChrome.setPreferredOrientations([
           DeviceOrientation.landscapeLeft,
@@ -116,19 +163,51 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
 
   @override
   void dispose() {
-    destoryVideoPlayer();
-    showCtrlTimer?.cancel();
+    if (_state.ref == 0) {
+      destoryVideoPlayer();
+      print(
+          "key:${widget.key},fullscreen:${widget.fullscreen} @@@@@@@@@@@@@@@@@@@@@@@,state dispose");
+    } else {
+      closeTimer();
+      print(
+          "key:${widget.key},fullscreen:${widget.fullscreen} @@@@@@@@@@@@@@@@@@@@@@@,dispose");
+    }
     super.dispose();
   }
 
+  progressCallback(timer) {
+    if (mounted) {
+      if (isPlay()) {
+        _state.videoController.position.then(
+          (duration) {
+            if (mounted) {
+              position = duration;
+            }
+          },
+        );
+      }
+      setState(() {});
+    }
+  }
+
+  void closeTimer() {
+    showCtrlTimer?.cancel();
+    showCtrlTimer = null;
+    progressTimer?.cancel();
+    progressTimer = null;
+  }
+
   destoryVideoPlayer() {
-    if (SingleVideoController.videoController == videoController)
+    closeTimer();
+
+    //print("key:${widget.key}@@@@@@@@@@@@@@@@@@@@@@@,destoryVideoPlayer");
+    if (SingleVideoController.videoController == _state.videoController)
       SingleVideoController.videoController = null;
-    if (videoController != null) {
+    if (_state.videoController != null) {
       try {
         disposing = true;
-        var disposeVideoController = videoController;
-        videoController = null;
+        var disposeVideoController = _state.videoController;
+        _state.videoController = null;
         disposeVideoController.removeListener(videoListener);
         status = VideoShowStatus.cover;
         setState(() {
@@ -162,43 +241,35 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
 
   bool isPlaying() {
     return playerValid &&
-        videoController != null &&
-        videoController.value != null &&
-        videoController.value.duration != null &&
-        videoController.value.isPlaying;
+        _state.videoController != null &&
+        _state.videoController.value != null &&
+        _state.videoController.value.duration != null &&
+        _state.videoController.value.isPlaying;
   }
 
   //包括暂停状态
   bool isPlay() {
     return playerValid &&
-        videoController != null &&
-        videoController.value != null &&
-        videoController.value.duration != null &&
-        (videoController.value.isPlaying || pause);
+        _state.videoController != null &&
+        _state.videoController.value != null &&
+        _state.videoController.value.duration != null &&
+        (_state.videoController.value.isPlaying || pause);
   }
 
   videoListener() {
-    if (videoController == null) return;
-    if (videoController.value.hasError) {
-      print('${videoController.value.errorDescription}');
-      destoryVideoPlayer();
-      return;
+    //print('${_state.videoController.value}');
+    if (mounted) {
+      if (_state.videoController == null) return;
+      if (_state.videoController.value.hasError) {
+        print('${_state.videoController.value.errorDescription}');
+        destoryVideoPlayer();
+        return;
+      }
     }
-    // //print('${videoController.value}');
-    if (isPlay()) {
-      //不加timer视频播放会越来越卡，还不知道原因
-      Timer(Duration(milliseconds: 100), () {
-        if (isPlay()) {
-          videoController.position.then((duration) {
-            position = duration;
-          });
-        }
-      });
-    }
-    setState(() {});
   }
 
   lastPlayerRelease() {
+    //print("key:${widget.key}@@@@@@@@@@@@@@@@@@@@@@@,lastPlayerRelease");
     try {
       if (SingleVideoController.videoController != null) {
         if (SingleVideoController.currentState != this) {
@@ -206,7 +277,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
             var disposeVideoController = SingleVideoController.videoController;
             SingleVideoController.videoController = null;
             var currentState = SingleVideoController.currentState;
-            currentState.videoController = null;
+            currentState._state.videoController = null;
             currentState.disposing = true;
             currentState = SingleVideoController.currentState;
             currentState.status = VideoShowStatus.cover;
@@ -243,9 +314,11 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
       //释放上个播放器
       if (disposing) return;
       playerValid = false;
+      lastProgressPos = 0;
+      position = Duration(seconds: 0);
       lastPlayerRelease();
       destoryVideoPlayer();
-      videoController = SingleVideoController.videoController =
+      _state.videoController = SingleVideoController.videoController =
           VideoPlayerController.network(widget.videoUrl);
       status = VideoShowStatus.video;
       SingleVideoController.currentKey = widget.key;
@@ -253,10 +326,12 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
 
       pause = false;
       setState(() {});
-      videoController.addListener(videoListener);
-      videoController.initialize().then((_) {
+      _state.videoController.addListener(videoListener);
+      _state.videoController.initialize().then((_) {
+        startProgressTime();
+
         playerValid = true;
-        videoController.play();
+        _state.videoController.play();
         setState(() {});
       }).catchError((_) {
         status = VideoShowStatus.cover;
@@ -269,10 +344,10 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   Widget _buildPlayIcon() {
     return GestureDetector(
       onTap: () {
-        if (videoController != null) {
+        if (_state.videoController != null) {
           if (pause) {
             pause = false;
-            videoController.play();
+            _state.videoController.play();
           } else
             videoPlay();
         }
@@ -282,7 +357,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
         child: Container(
           padding: EdgeInsets.all(10),
           child: Icon(
-            isPlay() ? Icons.play_arrow : Icons.reply,
+            isPlay() ? Icons.play_arrow : Icons.replay,
             size: MyTheme.sz(40),
             color: Colors.black54,
           ),
@@ -306,12 +381,12 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   }
 
   Widget _buildCentorStatus() {
-    if (videoController != null) {
-      if (!videoController.value.initialized) {
+    if (_state.videoController != null) {
+      if (!_state.videoController.value.initialized) {
         return CircularProgressIndicator();
-      } else if (videoController.value.isBuffering) {
+      } else if (_state.videoController.value.isBuffering) {
         return CircularProgressIndicator();
-      } else if (!videoController.value.isPlaying) {
+      } else if (!_state.videoController.value.isPlaying) {
         return _buildPlayIcon();
       }
     }
@@ -323,7 +398,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
     try {
       if (isPlay()) {
         value = position.inMilliseconds /
-            videoController.value.duration.inMilliseconds;
+            _state.videoController.value.duration.inMilliseconds;
       }
     } catch (e) {}
     return shouldShowCtrlBar()
@@ -359,8 +434,6 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
     );
   }
 
-  Timer showCtrlTimer;
-  int showCount = 5;
   _showCtrlBar() {
     showBar = true;
     showCount = 5;
@@ -370,7 +443,9 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
           t.cancel();
           showCtrlTimer = null;
           showBar = false;
-          setState(() {});
+          if (mounted) {
+            setState(() {});
+          }
         }
       });
       setState(() {});
@@ -383,7 +458,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
 
   Widget _buildCtrlBarPlayIcon() {
     Icon playIcon = Icon(Icons.play_arrow, color: Colors.white);
-    if (videoController != null) {
+    if (_state.videoController != null) {
       if (isPlaying()) {
         playIcon = Icon(Icons.pause, color: Colors.white);
       }
@@ -392,12 +467,12 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
       onPressed: () {
         _showCtrlBar();
         if (pause) {
-          if (videoController == null) return;
+          if (_state.videoController == null) return;
           pause = false;
-          videoController.play();
+          _state.videoController.play();
         } else {
           pause = true;
-          videoController.pause();
+          _state.videoController.pause();
         }
         setState(() {});
       },
@@ -407,10 +482,12 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
 
   Widget _buildCtrlBarTimer() {
     String showTime = '00:00 / 00:00';
-    if (videoController != null && videoController.value != null && isPlay()) {
+    if (_state.videoController != null &&
+        _state.videoController.value != null &&
+        isPlay()) {
       String totalTime = "";
       totalTime = TimeHelper.getTimeText(
-          videoController.value.duration.inSeconds.toDouble());
+          _state.videoController.value.duration.inSeconds.toDouble());
       String curTime = TimeHelper.getTimeText(position.inSeconds.toDouble());
       showTime = curTime + ' / ' + totalTime;
     }
@@ -418,18 +495,13 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
     return Text(showTime, style: TextStyle(color: Colors.white));
   }
 
-  double dragPos = 0;
-  bool draging = false;
-  double lastProgressPos = 0;
-  double lastTotalPos = 0;
-
   Widget _buildCtrlBarProgess() {
     double pos = 0;
     double total = 0;
     if (isPlay()) {
-      if (videoController.value.duration.inSeconds.toDouble() > 1) {
+      if (_state.videoController.value.duration.inSeconds.toDouble() > 1) {
         pos = position.inSeconds.toDouble();
-        total = videoController.value.duration.inSeconds.toDouble();
+        total = _state.videoController.value.duration.inSeconds.toDouble();
       }
     }
     //debugPrint('pos:$pos,total:$total,dragPos:$dragPos');
@@ -449,6 +521,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
           _showCtrlBar();
           dragPos = value;
           print("onChanged");
+          setState(() {});
         },
         onChangeStart: (value) {
           print("onChangeStart");
@@ -457,7 +530,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
         onChangeEnd: (value) {
           draging = false;
           if (isPlay()) {
-            videoController.seekTo(Duration(seconds: value.toInt()));
+            _state.videoController.seekTo(Duration(seconds: value.toInt()));
           }
           print("onChangeEnd");
         },
@@ -469,36 +542,43 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   }
 
   _showFullScreen() {
-    if (!widget.fullscreen) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Material(
-            child: ViewVideoPlayer(
-              widget.key,
-              videoUrl: widget.videoUrl,
-              coverBuilder: widget.coverBuilder,
-              advUrl: widget.advUrl,
-              fullscreen: true,
+    showCtrlTimer?.cancel();
+    _state.videoController.removeListener(videoListener);
+    Future.delayed(Duration(milliseconds: 200)).then((_) {
+      if (!widget.fullscreen) {
+        _state.ref++;
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Material(
+              child: ViewVideoPlayer(
+                widget.key,
+                videoUrl: widget.videoUrl,
+                coverBuilder: widget.coverBuilder,
+                advUrl: widget.advUrl,
+                fullscreen: true,
+                state: _state,
+              ),
             ),
           ),
-        ),
-      ).then((_) {
-        return SystemChrome.setPreferredOrientations([
-          DeviceOrientation.portraitUp,
-          DeviceOrientation.portraitDown,
-        ]);
-      }).then((_) {
-        return SystemChrome.restoreSystemUIOverlays();
-      }).then((_) {
-        SystemChrome.setEnabledSystemUIOverlays(const [
-          SystemUiOverlay.top,
-          SystemUiOverlay.bottom,
-        ]);
-      });
-    } else {
-      Navigator.pop(context);
-    }
+        ).then((_) {
+          return SystemChrome.setPreferredOrientations([
+            DeviceOrientation.portraitUp,
+            DeviceOrientation.portraitDown,
+          ]);
+        }).then((_) {
+          return SystemChrome.restoreSystemUIOverlays();
+        }).then((_) {
+          SystemChrome.setEnabledSystemUIOverlays(const [
+            SystemUiOverlay.top,
+            SystemUiOverlay.bottom,
+          ]);
+        });
+      } else {
+        _state.ref--;
+        Navigator.pop(context);
+      }
+    });
   }
 
   Widget _buildCtrlBarFullScreen() {
@@ -559,9 +639,9 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
         if (isPlay()) {
           if (isPlaying()) {
             pause = true;
-            videoController.pause();
+            _state.videoController.pause();
           } else
-            videoController.play();
+            _state.videoController.play();
         }
         setState(() {});
       },
