@@ -221,7 +221,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   }
 
   videoListener() {
-    //print('${_state.videoController.value}');
+    print('${_state.videoController.value}');
     if (mounted) {
       if (_state.videoController == null) return;
       if (_state.videoController.value.hasError) {
@@ -490,7 +490,9 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
       if (!_state.videoController.value.initialized) {
         return CircularProgressIndicator();
       } else if (_state.videoController.value.isBuffering) {
-        return CircularProgressIndicator();
+        if(!Platform.isIOS){
+          return CircularProgressIndicator();
+        }
       } else if (!_state.videoController.value.isPlaying) {
         return _buildPlayIcon();
       }
