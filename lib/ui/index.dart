@@ -76,6 +76,9 @@ class _IndexState extends State<Index> with TickerProviderStateMixin {
               ]),
         ),
         theme: ThemeData(
+            appBarTheme: AppBarTheme(
+              brightness: Brightness.light,
+            ),
             highlightColor: Colors.transparent,
             splashColor: Colors.transparent,
             primaryIconTheme: IconThemeData(color: MyTheme.colorDark),
