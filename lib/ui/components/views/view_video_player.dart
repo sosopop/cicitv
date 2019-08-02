@@ -216,17 +216,51 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
         (_state.videoController.value.isPlaying || _state.pause);
   }
 
-  videoListener() {
-    print('${_state.videoController.value}');
-    if (mounted) {
-      if (_state.videoController == null) return;
-      if (_state.videoController.value.hasError) {
-        print('${_state.videoController.value.errorDescription}');
-        destoryVideoPlayer();
+  DateTime lastRefreshTime = DateTime.now();
+  refresh() {
+    if (_state.videoController == null) return;
 
-        return;
+    // 检查是否不可显示
+    if (!widget.fullscreen) {
+      try {
+        if (isPlaying()) {
+          final screenSize = MediaQuery.of(context).size;
+          final box = context.findRenderObject() as RenderBox;
+          final size = box.size;
+          final pos = box.localToGlobal(Offset.zero);
+          //print('${pos}');
+          if (size.height / 2 + pos.dy < 0) {
+            _state.videoController.pause();
+          } else if (pos.dy > screenSize.height - size.height / 2) {
+            _state.videoController.pause();
+          } else if (pos.dx < -screenSize.width / 2) {
+            _state.videoController.pause();
+          } else if (pos.dx > screenSize.width / 2) {
+            _state.videoController.pause();
+          }
+        }
+      } catch (e) {}
+    }
+
+    //print('${_state.videoController.value}');
+
+    if (_state.videoController.value.hasError) {
+      print('${_state.videoController.value.errorDescription}');
+      destoryVideoPlayer();
+      return;
+    }
+  }
+
+  //不要在这里面调用控制函数，否则会又调入进来，死循环
+  videoListener() {
+    if (mounted) {
+      if (DateTime.now().difference(lastRefreshTime) >
+          Duration(milliseconds: 300)) {
+        //最少间隔300毫秒回调一次
+        lastRefreshTime = DateTime.now();
+        refresh();
+        setState(() {});
       }
-      setState(() {});
     }
   }
 

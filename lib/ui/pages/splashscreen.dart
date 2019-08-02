@@ -68,7 +68,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       horizontal: MyTheme.sz(10), vertical: MyTheme.sz(5)),
                   color: MyTheme.transBlackIcon,
                   child: Text(
-                    lastTime > 0 ? "$lastTime 秒" : "关闭",
+                    lastTime > 0 ? "$lastTime秒" : "关闭",
                     style: TextStyle(
                         decoration: TextDecoration.none,
                         fontSize: MyTheme.sz(12),
