@@ -28,7 +28,8 @@ class ViewStarShowItem extends StatelessWidget {
         Container(
           alignment: Alignment.center,
           width: MyTheme.sz(90),
-          padding: EdgeInsets.symmetric(vertical: MyTheme.sz(10)),
+          height: MyTheme.sz(30),
+          padding: EdgeInsets.symmetric(vertical: MyTheme.sz(5)),
           child: Text(
             title,
             maxLines: 1,

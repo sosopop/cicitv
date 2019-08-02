@@ -664,9 +664,8 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
 
       double currentBrightness = 0;
       Screen.brightness.then((_) {
+        Screen.keepOn(true);
         currentBrightness = _;
-        return Screen.keepOn(true);
-      }).then((_) {
         return Navigator.push(
           context,
           MaterialPageRoute(
@@ -707,6 +706,8 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
       }).then((_) {
         Screen.keepOn(false);
         Screen.setBrightness(currentBrightness);
+      }).catchError((_){
+        print('$_');
       });
     } else {
       Navigator.pop(context);
