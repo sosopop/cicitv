@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +13,8 @@ import 'package:cicitv/common/time_helper.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:screen/screen.dart';
+import 'package:volume/volume.dart';
 
 /**
  * chewie和videoplayer的问题，播放完毕后没法重播，seekto（ 0）后获取不到进度信息，如果设置looping的话，获取不到进度事件
@@ -22,6 +26,12 @@ enum VideoShowStatus {
   cover,
   adver,
   video,
+}
+
+enum VideoDragType {
+  position,
+  volume,
+  brightness,
 }
 
 class SingleVideoController {
@@ -90,6 +100,12 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   bool videoDisposing = false;
   bool adverDisposing = false;
   bool fullscreenState = false;
+
+  //位置拖动状态
+  VideoDragType dragType;
+  double posSeconds = 0;
+  double posBrightness = 0;
+  double posVolume = 0;
 
   void restorePlayStatus() {
     if (_state.videoController != null) {
@@ -647,23 +663,29 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
       fullscreenState = true;
       setState(() {});
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Material(
-            child: RotatedBox(
-              child: ViewVideoPlayer(
-                videoUrl: widget.videoUrl,
-                coverBuilder: widget.coverBuilder,
-                adUrl: widget.adUrl,
-                fullscreen: true,
-                state: _state,
+      double currentBrightness = 0;
+      Screen.brightness.then((_) {
+        currentBrightness = _;
+        return Screen.keepOn(true);
+      }).then((_) {
+        return Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Material(
+              child: RotatedBox(
+                child: ViewVideoPlayer(
+                  videoUrl: widget.videoUrl,
+                  coverBuilder: widget.coverBuilder,
+                  adUrl: widget.adUrl,
+                  fullscreen: true,
+                  state: _state,
+                ),
+                quarterTurns: 1,
               ),
-              quarterTurns: 1,
             ),
           ),
-        ),
-      ).then((_) {
+        );
+      }).then((_) {
         return SystemChrome.setEnabledSystemUIOverlays(const [
           SystemUiOverlay.top,
           SystemUiOverlay.bottom,
@@ -683,6 +705,9 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
           fullscreenState = false;
           setState(() {});
         }
+      }).then((_) {
+        Screen.keepOn(false);
+        Screen.setBrightness(currentBrightness);
       });
     } else {
       Navigator.pop(context);
@@ -738,7 +763,183 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
     );
   }
 
+  Widget _buildDragView() {
+    final RenderBox box = context.findRenderObject();
+    if (box == null) return Container();
+    final sz = box.size;
+    double h = max(min(sz.width, sz.height) / 4, 100);
+    String showInfo = "";
+    IconData iconData = Icons.block;
+
+    if (dragType == VideoDragType.position) {
+      if (posSeconds > 0) {
+        iconData = Icons.fast_forward;
+        showInfo = '${posSeconds.toStringAsFixed(2)}';
+      } else {
+        iconData = Icons.fast_rewind;
+        showInfo = '${posSeconds.toStringAsFixed(2)}';
+      }
+    } else if (dragType == VideoDragType.brightness) {
+      if (posBrightness > 0.7) {
+        iconData = Icons.brightness_high;
+      } else if (posBrightness > 0.3) {
+        iconData = Icons.brightness_medium;
+      } else {
+        iconData = Icons.brightness_low;
+      }
+      showInfo = '${(posBrightness * 100).toInt()}';
+    } else if (dragType == VideoDragType.volume) {
+      if (posVolume > 0.7) {
+        iconData = Icons.volume_up;
+      } else if (posVolume > 0.3) {
+        iconData = Icons.volume_down;
+      } else {
+        iconData = Icons.volume_mute;
+      }
+      showInfo = '${(posVolume * 100).toInt()}';
+    }
+    return showInfo.isNotEmpty
+        ? Center(
+            child: Container(
+              width: h,
+              height: h,
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(MyTheme.sz(10))),
+                child: Container(
+                  padding: EdgeInsets.all(MyTheme.sz(5)),
+                  color: Colors.white54,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Icon(
+                        iconData,
+                        size: h / 2,
+                        color: Colors.black54,
+                      ),
+                      Text(showInfo,
+                          style: TextStyle(
+                              fontSize: MyTheme.sz(16),
+                              color: Colors.black54,
+                              fontWeight: FontWeight.w700)),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          )
+        : Container();
+  }
+
   Widget _buildVideo() {
+    GestureDragStartCallback onVerticalDragStart;
+    GestureDragEndCallback onVerticalDragEnd;
+    GestureDragCancelCallback onVerticalDragCancel;
+    GestureDragUpdateCallback onVerticalDragUpdate;
+    GestureDragStartCallback onHorizontalDragStart;
+    GestureDragEndCallback onHorizontalDragEnd;
+    GestureDragCancelCallback onHorizontalDragCancel;
+    GestureDragUpdateCallback onHorizontalDragUpdate;
+
+    if (widget.fullscreen) {
+      onVerticalDragStart = (DragStartDetails details) {
+        if (isPlay()) {
+          Size sz = MediaQuery.of(context).size;
+          if (sz.height / 2 > details.globalPosition.dy) {
+            dragType = VideoDragType.volume;
+          } else {
+            dragType = VideoDragType.brightness;
+          }
+        }
+        print('onVerticalDragStart $details');
+      };
+      onVerticalDragEnd = (DragEndDetails details) {
+        dragType = null;
+        posBrightness = 0;
+        posVolume = 0;
+        print('onVerticalDragEnd $details');
+      };
+      onVerticalDragCancel = () {
+        dragType = null;
+        posBrightness = 0;
+        posVolume = 0;
+        print('onHorizontalDragCancel');
+      };
+      onVerticalDragUpdate = (DragUpdateDetails details) async {
+        if (dragType == VideoDragType.brightness) {
+          if (isPlay()) {
+            try {
+              Size sz = MediaQuery.of(context).size;
+              var deltaBrightness = (-details.delta.dy / sz.height);
+              double brightness = await Screen.brightness;
+              posBrightness = brightness + deltaBrightness;
+              if (posBrightness > 1) {
+                posBrightness = 1;
+              } else if (posBrightness < 0) {
+                posBrightness = 0;
+              }
+              Screen.setBrightness(posBrightness);
+              setState(() {});
+            } catch (e) {}
+          }
+        } else if (dragType == VideoDragType.volume) {
+          if (isPlay()) {
+            try {
+              Size sz = MediaQuery.of(context).size;
+              var deltaVolume = (-details.delta.dy / sz.height);
+              double volume = _state.videoController.value.volume;
+              posVolume = volume + deltaVolume;
+              if (posVolume > 1) {
+                posVolume = 1;
+              } else if (posVolume < 0) {
+                posVolume = 0;
+              }
+              _state.videoController.setVolume(posVolume);
+            } catch (e) {}
+          }
+        }
+        print('onVerticalDragUpdate $details');
+      };
+      onHorizontalDragStart = (DragStartDetails details) {
+        if (isPlay()) {
+          dragType = VideoDragType.position;
+          posSeconds = 0.0;
+        }
+        print('DragStartDetails $details');
+      };
+      onHorizontalDragEnd = (DragEndDetails details) {
+        if (dragType == VideoDragType.position) {
+          if (isPlay()) {
+            _state.videoController.seekTo(Duration(
+                milliseconds:
+                    (_state.videoController.value.position.inMilliseconds +
+                            posSeconds * 1000)
+                        .toInt()));
+          }
+        }
+        dragType = null;
+        posSeconds = 0.0;
+        print('DragStartDetails $details');
+      };
+      onHorizontalDragCancel = () {
+        dragType = null;
+        posSeconds = 0.0;
+        print('onHorizontalDragCancel');
+      };
+      onHorizontalDragUpdate = (DragUpdateDetails details) {
+        if (dragType == VideoDragType.position) {
+          if (isPlay()) {
+            double delta = details.delta.dx;
+            delta /= 10;
+            posSeconds += delta;
+
+            setState(() {});
+            print('pos $posSeconds');
+          }
+        }
+        print('DragStartDetails $details');
+      };
+    }
+
     return GestureDetector(
       onTap: () {
         _showCtrlBar();
@@ -753,6 +954,14 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
         }
         setState(() {});
       },
+      onVerticalDragStart: onVerticalDragStart,
+      onVerticalDragEnd: onVerticalDragEnd,
+      onVerticalDragCancel: onVerticalDragCancel,
+      onVerticalDragUpdate: onVerticalDragUpdate,
+      onHorizontalDragStart: onHorizontalDragStart,
+      onHorizontalDragEnd: onHorizontalDragEnd,
+      onHorizontalDragCancel: onHorizontalDragCancel,
+      onHorizontalDragUpdate: onHorizontalDragUpdate,
       child: Container(
         color: Colors.black,
         child: Stack(
@@ -760,6 +969,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
             VideoPlayer(_state.videoController),
             _buildVideoController(),
             _buildStatusView(),
+            _buildDragView(),
           ],
         ),
       ),
