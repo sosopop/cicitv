@@ -4,18 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:cicitv/common/mytheme.dart';
-import 'package:cicitv/common/myimage.dart';
 import 'dart:async';
-import 'dart:collection';
 import 'package:video_player/video_player.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:cicitv/common/time_helper.dart';
-import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:screen/screen.dart';
 
-/**
+/*
  * chewie和videoplayer的问题，播放完毕后没法重播，seekto（ 0）后获取不到进度信息，如果设置looping的话，获取不到进度事件
  * 全屏状态后，如果非全屏的widget状态丢失，全屏状态的controller也会释放，导致异常
  * 多个播放器互斥问题
@@ -490,7 +486,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
       if (!_state.videoController.value.initialized) {
         return CircularProgressIndicator();
       } else if (_state.videoController.value.isBuffering) {
-        if(!Platform.isIOS){
+        if (!Platform.isIOS) {
           return CircularProgressIndicator();
         }
       } else if (!_state.videoController.value.isPlaying) {
@@ -708,7 +704,7 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
       }).then((_) {
         Screen.keepOn(false);
         Screen.setBrightness(currentBrightness);
-      }).catchError((_){
+      }).catchError((_) {
         print('$_');
       });
     } else {

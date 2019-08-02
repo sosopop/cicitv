@@ -90,9 +90,7 @@ class _UserStuffWidget extends StatelessWidget {
             child: FlatButton(
               padding: EdgeInsets.all(0),
               textColor: MyTheme.fontColor,
-              onPressed: () {
-                int a = 0;
-              },
+              onPressed: () {},
               child: Column(
                 children: <Widget>[
                   Text(
@@ -115,9 +113,7 @@ class _UserStuffWidget extends StatelessWidget {
             child: FlatButton(
               padding: EdgeInsets.all(0),
               textColor: MyTheme.fontColor,
-              onPressed: () {
-                int a = 0;
-              },
+              onPressed: () {},
               child: Column(
                 children: <Widget>[
                   Text(
@@ -140,9 +136,7 @@ class _UserStuffWidget extends StatelessWidget {
             child: FlatButton(
               padding: EdgeInsets.all(0),
               textColor: MyTheme.fontColor,
-              onPressed: () {
-                int a = 0;
-              },
+              onPressed: () {},
               child: Column(
                 children: <Widget>[
                   Text(
@@ -165,9 +159,7 @@ class _UserStuffWidget extends StatelessWidget {
             child: FlatButton(
               padding: EdgeInsets.all(0),
               textColor: MyTheme.fontColor,
-              onPressed: () {
-                int a = 0;
-              },
+              onPressed: () {},
               child: Column(
                 children: <Widget>[
                   Text(

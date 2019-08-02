@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
@@ -8,7 +6,6 @@ import 'package:cicitv/common/myimage.dart';
 //import 'package:chewie/chewie.dart';
 //import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 import 'package:cicitv/ui/components/views/view_video_player.dart';
-import 'package:flutter/foundation.dart';
 
 class ViewVideoShowItem extends StatelessWidget {
   final String picUrl;
