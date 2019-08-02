@@ -29,7 +29,6 @@ dependencies:
   video_player: ^0.10.1
   flutter_cache_manager: ^1.1.1
   screen: ^0.0.5
-  volume: ^0.1.0
   #custom_chewie: ^0.7.0
   #flutter_ijkplayer: ^0.3.1
   # The following adds the Cupertino Icons font to your application.
