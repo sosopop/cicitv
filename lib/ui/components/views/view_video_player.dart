@@ -14,7 +14,6 @@ import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:screen/screen.dart';
-import 'package:volume/volume.dart';
 
 /**
  * chewie和videoplayer的问题，播放完毕后没法重播，seekto（ 0）后获取不到进度信息，如果设置looping的话，获取不到进度事件
