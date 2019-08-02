@@ -5,12 +5,12 @@ import 'package:flutter/services.dart';
 void main() async {
   await SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-/*
+
+  runApp(Index());
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent, //top bar color
-    statusBarIconBrightness: Brightness.dark, //top bar icons
-    systemNavigationBarColor: Colors.black, //bottom bar color
-    systemNavigationBarIconBrightness: Brightness.dark, //bottom bar icons
-  ));*/
-  runApp(Index());
+    statusBarIconBrightness: Brightness.light, //top bar icons
+    systemNavigationBarColor: Colors.white, //bottom bar color
+    systemNavigationBarIconBrightness: Brightness.light, //bottom bar icons
+  ));
 }
