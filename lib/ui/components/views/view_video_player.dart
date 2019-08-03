@@ -259,8 +259,8 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
         //最少间隔300毫秒回调一次
         lastRefreshTime = DateTime.now();
         refresh();
-        setState(() {});
       }
+      setState(() {});
     }
   }
 
