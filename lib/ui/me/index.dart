@@ -13,7 +13,9 @@ class _UnloginWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return FlatButton(
       padding: EdgeInsets.all(20),
-      onPressed: () {},
+      onPressed: () {
+        Navigator.pushNamed(context, '/me/login');
+      },
       color: MyTheme.bgColor,
       child: Column(
         children: <Widget>[
@@ -201,101 +203,103 @@ class _IndexState extends State<MeIndex> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: <Widget>[
-        _UnloginWidget(),
-        _UserStuffWidget(
-            balance: 0, vip: false, watchCount: 0, watchTotal: 0, income: 0),
-        SizedBox(
-          height: MyTheme.sz(5),
-        ),
-        Container(
-          padding: EdgeInsets.all(MyTheme.sz(10)),
-          child: FlatButton(
-            highlightColor: Colors.deepOrangeAccent,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(MyTheme.sz(10))),
-            padding: EdgeInsets.all(MyTheme.sz(12)),
-            onPressed: () {},
-            color: MyTheme.color,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(
-                  Icons.attach_money,
-                  color: Colors.white,
-                ),
-                Text("我要充值",
-                    style: TextStyle(
-                        fontSize: MyTheme.sz(18), color: Colors.white))
-              ],
+    return Scaffold(
+      body: ListView(
+        children: <Widget>[
+          _UnloginWidget(),
+          _UserStuffWidget(
+              balance: 0, vip: false, watchCount: 0, watchTotal: 0, income: 0),
+          SizedBox(
+            height: MyTheme.sz(5),
+          ),
+          Container(
+            padding: EdgeInsets.all(MyTheme.sz(10)),
+            child: FlatButton(
+              highlightColor: Colors.deepOrangeAccent,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(MyTheme.sz(10))),
+              padding: EdgeInsets.all(MyTheme.sz(12)),
+              onPressed: () {},
+              color: MyTheme.color,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(
+                    Icons.attach_money,
+                    color: Colors.white,
+                  ),
+                  Text("我要充值",
+                      style: TextStyle(
+                          fontSize: MyTheme.sz(18), color: Colors.white))
+                ],
+              ),
             ),
           ),
-        ),
-        SizedBox(
-          height: MyTheme.sz(5),
-        ),
-        Container(
-          child: AspectRatio(
-            aspectRatio: 16 / 9,
-            child: MyImage(
-                "https://u8.iqiyipic.com/xiuchang/20190116/3e/b3/xiuchang_5c3ee8ccf6882e0d73463eb3_banner.jpg"),
+          SizedBox(
+            height: MyTheme.sz(5),
           ),
-        ),
-        SizedBox(
-          height: MyTheme.sz(5),
-        ),
-        Container(
-          color: MyTheme.bgColor,
-          child: Column(
-            children: <Widget>[
-              FlatButton(
-                padding: EdgeInsets.symmetric(
-                    horizontal: MyTheme.sz(15), vertical: MyTheme.sz(20)),
-                onPressed: () {},
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Text(
-                        "官方邮箱",
-                        style: _itemTitleText,
-                      ),
-                    ),
-                    Text(
-                      "14547272@163.com",
-                      style: _itemContentText,
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: MyTheme.sz(15)),
-                height: MyTheme.sz(1),
-                color: Colors.grey[200],
-              ),
-              FlatButton(
-                padding: EdgeInsets.symmetric(
-                    horizontal: MyTheme.sz(15), vertical: MyTheme.sz(20)),
-                onPressed: () {},
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Text(
-                        "意见反馈",
-                        style: _itemTitleText,
-                      ),
-                    ),
-                    Icon(
-                      Icons.chevron_right,
-                      color: MyTheme.fontColor,
-                    )
-                  ],
-                ),
-              )
-            ],
+          Container(
+            child: AspectRatio(
+              aspectRatio: 16 / 9,
+              child: MyImage(
+                  "https://u8.iqiyipic.com/xiuchang/20190116/3e/b3/xiuchang_5c3ee8ccf6882e0d73463eb3_banner.jpg"),
+            ),
           ),
-        )
-      ],
+          SizedBox(
+            height: MyTheme.sz(5),
+          ),
+          Container(
+            color: MyTheme.bgColor,
+            child: Column(
+              children: <Widget>[
+                FlatButton(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: MyTheme.sz(15), vertical: MyTheme.sz(20)),
+                  onPressed: () {},
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Text(
+                          "官方邮箱",
+                          style: _itemTitleText,
+                        ),
+                      ),
+                      Text(
+                        "14547272@163.com",
+                        style: _itemContentText,
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: MyTheme.sz(15)),
+                  height: MyTheme.sz(1),
+                  color: Colors.grey[200],
+                ),
+                FlatButton(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: MyTheme.sz(15), vertical: MyTheme.sz(20)),
+                  onPressed: () {},
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Text(
+                          "意见反馈",
+                          style: _itemTitleText,
+                        ),
+                      ),
+                      Icon(
+                        Icons.chevron_right,
+                        color: MyTheme.fontColor,
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }

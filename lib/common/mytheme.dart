@@ -7,13 +7,28 @@ class MyTheme {
     return size;
   }
 
-  static Color colorDark = Colors.black54;
+  static Icon backIcon() {
+    return Icon(Icons.arrow_back_ios);
+  }
+
+  static AppBar appBar(context) {
+    return AppBar(
+      leading: IconButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        icon: Icon(Icons.arrow_back_ios),
+      ),
+    );
+  }
+
+  static Color colorDark = Color.fromARGB(255, 96, 96, 96);
   static Color color = Colors.pink;
   static Color colorDeep = Colors.pink[700];
   static Color accentColor = Colors.pinkAccent;
   static Color bgColor = Colors.white;
-  static Color fontColor = Colors.black54;
-  static Color fontDeepColor = Colors.black87;
+  static Color fontColor = Color.fromARGB(255, 96, 96, 96);
+  static Color fontDeepColor = Color.fromARGB(255, 32, 32, 32);
   static Color holderColor = Colors.grey[200];
   static Color tagColor = Colors.orange;
   static Color revFontColor = Colors.white;

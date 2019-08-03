@@ -34,45 +34,64 @@ class _IndexState extends State<Index> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  bool exit = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pageList[_selectPage],
-      bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          unselectedItemColor: MyTheme.fontColor,
-          currentIndex: _selectPage,
-          onTap: (int index) {
-            setState(() {
-              _selectPage = index;
-            });
-          },
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.video_library),
-              title: Text('视频'),
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.group_work), title: Text('圈子')),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.ondemand_video), title: Text('直播')),
-            BottomNavigationBarItem(
-              icon: Stack(children: <Widget>[
-                Container(
-                  width: 30,
-                  child: Icon(Icons.person),
+      body: Builder(builder: (BuildContext context) {
+        return WillPopScope(
+            onWillPop: () async {
+              if (exit) return true;
+              Scaffold.of(context).showSnackBar(SnackBar(
+                content: Text(
+                  "再次后退离开",
                 ),
-                Positioned(
-                  // draw a red marble
-                  top: 0.0,
-                  right: 0.0,
-                  child: Icon(Icons.brightness_1,
-                      size: 8.0, color: Colors.redAccent),
-                )
-              ]),
-              title: Text('我的'),
-            ),
-          ]),
+              ));
+              exit = true;
+              return Future.delayed(Duration(seconds: 2), () {
+                exit = false;
+                return false;
+              });
+            },
+            child: _pageList[_selectPage]);
+      }),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        unselectedItemColor: MyTheme.fontColor,
+        currentIndex: _selectPage,
+        onTap: (int index) {
+          setState(() {
+            _selectPage = index;
+          });
+        },
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.video_library),
+            title: Text('视频'),
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.group_work), title: Text('圈子')),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.ondemand_video), title: Text('直播')),
+          BottomNavigationBarItem(
+            icon: Stack(children: <Widget>[
+              Container(
+                width: 30,
+                child: Icon(Icons.person),
+              ),
+              Positioned(
+                // draw a red marble
+                top: 0.0,
+                right: 0.0,
+                child: Icon(Icons.brightness_1,
+                    size: 8.0, color: Colors.redAccent),
+              )
+            ]),
+            title: Text('我的'),
+          ),
+        ],
+      ),
     );
   }
 }
