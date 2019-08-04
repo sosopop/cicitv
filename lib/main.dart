@@ -4,10 +4,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:cicitv/ui/pages/splashscreen.dart';
 import 'package:cicitv/common/mytheme.dart';
 import 'package:cicitv/ui/index.dart';
-import 'package:cicitv/ui/me/reg.dart';
-import 'package:cicitv/ui/me/login.dart';
-import 'package:cicitv/ui/me/forget.dart';
-import 'package:cicitv/ui/me/modpass.dart';
+import 'package:cicitv/ui/user/reg.dart';
+import 'package:cicitv/ui/user/login.dart';
+import 'package:cicitv/ui/user/forget.dart';
+import 'package:cicitv/ui/user/modpass.dart';
 
 void main() async {
   await SystemChrome.setPreferredOrientations(
@@ -63,10 +63,10 @@ void main() async {
       debugShowCheckedModeBanner: false,
       routes: <String, WidgetBuilder>{
         '/home': (BuildContext context) => Index(),
-        '/me/reg': (BuildContext context) => MeReg(),
-        '/me/login': (BuildContext context) => MeLogin(),
-        '/me/forget': (BuildContext context) => MeForget(),
-        '/me/modpass': (BuildContext context) => MeModPass(),
+        '/me/reg': (BuildContext context) => UserReg(),
+        '/me/login': (BuildContext context) => UserLogin(),
+        '/me/forget': (BuildContext context) => UserForget(),
+        '/me/modpass': (BuildContext context) => UserModPass(),
       },
     ),
   );

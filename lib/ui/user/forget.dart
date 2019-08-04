@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-class MeReg extends StatefulWidget {
+class UserForget extends StatefulWidget {
   @override
-  State<MeReg> createState() => new _MeRegState();
+  State<UserForget> createState() => new _UserForgetState();
 }
 
-class _MeRegState extends State<MeReg> {
+class _UserForgetState extends State<UserForget> {
   @override
   void initState() {
     showPwd = false;
@@ -43,7 +43,7 @@ class _MeRegState extends State<MeReg> {
               alignment: Alignment.centerLeft,
               height: MyTheme.sz(30),
               child: Text(
-                '用户注册',
+                '重置密码',
                 style: TextStyle(
                     fontSize: MyTheme.sz(22), fontWeight: FontWeight.bold),
               ),
@@ -117,11 +117,7 @@ class _MeRegState extends State<MeReg> {
                         padding: EdgeInsets.all(4),
                         child: Text(
                           vcodeTimer > 0 ? '还剩($vcodeTimer)秒' : '获取验证码',
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: vcodeTimer > 0
-                                  ? MyTheme.fontLightColor
-                                  : MyTheme.fontDeepColor),
+                          style: TextStyle(fontSize: 12, color: MyTheme.color),
                         ),
                       ),
                     ),
@@ -138,7 +134,7 @@ class _MeRegState extends State<MeReg> {
                 obscureText: !showPwd,
                 decoration: InputDecoration(
                     counterText: "",
-                    hintText: '请输入密码',
+                    hintText: '请输入新密码',
                     prefixIcon: Icon(
                       Icons.lock,
                       color: MyTheme.hintColor,
@@ -176,7 +172,7 @@ class _MeRegState extends State<MeReg> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text('注 册',
+                    Text('确 定',
                         style: TextStyle(
                             fontSize: MyTheme.sz(18), color: Colors.white))
                   ],

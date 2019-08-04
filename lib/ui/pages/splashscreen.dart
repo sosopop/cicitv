@@ -23,7 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (--lastTime <= 0) {
         timer.cancel();
       }
-      setState(() {});
+      if (mounted) setState(() {});
     });
   }
 

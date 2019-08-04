@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-class MeForget extends StatefulWidget {
+class UserForget extends StatefulWidget {
   @override
-  State<MeForget> createState() => new _MeForgetState();
+  State<UserForget> createState() => new _UserForgetState();
 }
 
-class _MeForgetState extends State<MeForget> {
+class _UserForgetState extends State<UserForget> {
   @override
   void initState() {
     showPwd = false;

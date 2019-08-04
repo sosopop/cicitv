@@ -1,15 +1,14 @@
 import 'package:cicitv/common/mytheme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-class MeLogin extends StatefulWidget {
+class UserModPass extends StatefulWidget {
   @override
-  State<MeLogin> createState() => new _MeLoginState();
+  State<UserModPass> createState() => new _UserModPassState();
 }
 
-class _MeLoginState extends State<MeLogin> {
+class _UserModPassState extends State<UserModPass> {
   @override
   void initState() {
     showPwd = false;
@@ -39,7 +38,7 @@ class _MeLoginState extends State<MeLogin> {
               alignment: Alignment.centerLeft,
               height: MyTheme.sz(30),
               child: Text(
-                '您好，欢迎登录',
+                '修改密码',
                 style: TextStyle(
                     fontSize: MyTheme.sz(22), fontWeight: FontWeight.bold),
               ),
@@ -49,22 +48,28 @@ class _MeLoginState extends State<MeLogin> {
             ),
             Container(
               padding: EdgeInsets.symmetric(
-                vertical: MyTheme.sz(5),
-                horizontal: MyTheme.sz(0),
-              ),
+                  vertical: MyTheme.sz(5), horizontal: MyTheme.sz(0)),
               child: TextFormField(
                 maxLines: 1,
-                keyboardType: TextInputType.number,
-                maxLength: 11,
-                inputFormatters: <TextInputFormatter>[
-                  WhitelistingTextInputFormatter.digitsOnly
-                ],
+                maxLength: 32,
+                obscureText: !showPwd,
                 decoration: InputDecoration(
                   counterText: "",
-                  hintText: '请输入手机号',
+                  hintText: '请输入当前密码',
                   prefixIcon: Icon(
-                    Icons.phone_iphone,
+                    Icons.lock_open,
                     color: MyTheme.hintColor,
+                  ),
+                  suffix: GestureDetector(
+                    onTap: () {
+                      showPwd = !showPwd;
+                      setState(() {});
+                    },
+                    child: Icon(
+                      showPwd ? Icons.visibility : Icons.visibility_off,
+                      size: MyTheme.sz(20),
+                      color: MyTheme.hintColor,
+                    ),
                   ),
                 ),
               ),
@@ -78,7 +83,7 @@ class _MeLoginState extends State<MeLogin> {
                 obscureText: !showPwd,
                 decoration: InputDecoration(
                     counterText: "",
-                    hintText: '请输入密码',
+                    hintText: '请输入新密码',
                     prefixIcon: Icon(
                       Icons.lock,
                       color: MyTheme.hintColor,
@@ -100,37 +105,6 @@ class _MeLoginState extends State<MeLogin> {
               height: MyTheme.sz(20),
             ),
             Container(
-              height: MyTheme.sz(40),
-              child: Row(
-                children: <Widget>[
-                  FlatButton(
-                    onPressed: () {
-                      Navigator.pushReplacementNamed(context, '/me/forget');
-                    },
-                    child: Text(
-                      '忘记密码',
-                      style: TextStyle(color: MyTheme.fontColor),
-                    ),
-                  ),
-                  Spacer(
-                    flex: 1,
-                  ),
-                  FlatButton(
-                    onPressed: () {
-                      Navigator.pushReplacementNamed(context, '/me/reg');
-                    },
-                    child: Text(
-                      '我要注册',
-                      style: TextStyle(color: MyTheme.fontColor),
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Container(
-              height: MyTheme.sz(20),
-            ),
-            Container(
               padding: EdgeInsets.symmetric(
                   vertical: MyTheme.sz(5), horizontal: MyTheme.sz(0)),
               child: FlatButton(
@@ -144,7 +118,7 @@ class _MeLoginState extends State<MeLogin> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text('登 录',
+                    Text('确 定',
                         style: TextStyle(
                             fontSize: MyTheme.sz(18), color: Colors.white))
                   ],

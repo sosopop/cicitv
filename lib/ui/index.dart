@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:cicitv/common/mytheme.dart';
 import 'package:cicitv/ui/video/index.dart';
-import 'package:cicitv/ui/me/index.dart';
+import 'package:cicitv/ui/user/index.dart';
 import 'package:cicitv/ui/live/index.dart';
 import 'package:cicitv/ui/social/index.dart';
 
@@ -24,7 +24,7 @@ class _IndexState extends State<Index> with TickerProviderStateMixin {
       new VideoIndex(),
       new SocialIndex(),
       new LiveIndex(),
-      new MeIndex()
+      new UserIndex()
     ];
   }
 
