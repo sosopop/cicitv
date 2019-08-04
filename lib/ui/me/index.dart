@@ -215,7 +215,6 @@ class _IndexState extends State<MeIndex> with TickerProviderStateMixin {
           Container(
             padding: EdgeInsets.all(MyTheme.sz(10)),
             child: FlatButton(
-              highlightColor: Colors.deepOrangeAccent,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(MyTheme.sz(10))),
               padding: EdgeInsets.all(MyTheme.sz(12)),

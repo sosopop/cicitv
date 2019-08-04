@@ -19,6 +19,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   #flutter_ijkplayer:
   #path: ./packages/flutter_ijkplayer
   # carousel_slider: ^1.3.0

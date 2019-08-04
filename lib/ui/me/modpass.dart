@@ -1,21 +1,17 @@
-import 'dart:async';
-
 import 'package:cicitv/common/mytheme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-class MeReg extends StatefulWidget {
+class MeModPass extends StatefulWidget {
   @override
-  State<MeReg> createState() => new _MeRegState();
+  State<MeModPass> createState() => new _MeModPassState();
 }
 
-class _MeRegState extends State<MeReg> {
+class _MeModPassState extends State<MeModPass> {
   @override
   void initState() {
     showPwd = false;
-    vcodeTimer = 0;
     super.initState();
   }
 
@@ -25,7 +21,6 @@ class _MeRegState extends State<MeReg> {
   }
 
   bool showPwd;
-  int vcodeTimer;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +38,7 @@ class _MeRegState extends State<MeReg> {
               alignment: Alignment.centerLeft,
               height: MyTheme.sz(30),
               child: Text(
-                '用户注册',
+                '修改密码',
                 style: TextStyle(
                     fontSize: MyTheme.sz(22), fontWeight: FontWeight.bold),
               ),
@@ -53,80 +48,30 @@ class _MeRegState extends State<MeReg> {
             ),
             Container(
               padding: EdgeInsets.symmetric(
-                vertical: MyTheme.sz(5),
-                horizontal: MyTheme.sz(0),
-              ),
+                  vertical: MyTheme.sz(5), horizontal: MyTheme.sz(0)),
               child: TextFormField(
                 maxLines: 1,
-                keyboardType: TextInputType.number,
-                maxLength: 11,
-                inputFormatters: <TextInputFormatter>[
-                  WhitelistingTextInputFormatter.digitsOnly
-                ],
+                maxLength: 32,
+                obscureText: !showPwd,
                 decoration: InputDecoration(
                   counterText: "",
-                  hintText: '请输入手机号',
+                  hintText: '请输入当前密码',
                   prefixIcon: Icon(
-                    Icons.phone_iphone,
+                    Icons.lock_open,
                     color: MyTheme.hintColor,
                   ),
+                  suffix: GestureDetector(
+                    onTap: () {
+                      showPwd = !showPwd;
+                      setState(() {});
+                    },
+                    child: Icon(
+                      showPwd ? Icons.visibility : Icons.visibility_off,
+                      size: MyTheme.sz(20),
+                      color: MyTheme.hintColor,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(
-                vertical: MyTheme.sz(5),
-                horizontal: MyTheme.sz(0),
-              ),
-              child: Stack(
-                alignment: AlignmentDirectional.centerEnd,
-                children: <Widget>[
-                  TextFormField(
-                    maxLines: 1,
-                    keyboardType: TextInputType.number,
-                    maxLength: 6,
-                    inputFormatters: <TextInputFormatter>[
-                      WhitelistingTextInputFormatter.digitsOnly
-                    ],
-                    decoration: InputDecoration(
-                      counterText: "",
-                      hintText: '请输入验证码',
-                      prefixIcon: Icon(
-                        Icons.dialpad,
-                        color: MyTheme.hintColor,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.centerRight,
-                    child: GestureDetector(
-                      onTap: () {
-                        if (vcodeTimer > 0) {
-                          return;
-                        }
-                        vcodeTimer = 60;
-                        setState(() {});
-                        Timer.periodic(Duration(seconds: 1), (timer) {
-                          if (--vcodeTimer <= 0) {
-                            timer.cancel();
-                          }
-                          setState(() {});
-                        });
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(4),
-                        child: Text(
-                          vcodeTimer > 0 ? '还剩($vcodeTimer)秒' : '获取验证码',
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: vcodeTimer > 0
-                                  ? MyTheme.fontLightColor
-                                  : MyTheme.fontDeepColor),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
               ),
             ),
             Container(
@@ -138,7 +83,7 @@ class _MeRegState extends State<MeReg> {
                 obscureText: !showPwd,
                 decoration: InputDecoration(
                     counterText: "",
-                    hintText: '请输入密码',
+                    hintText: '请输入新密码',
                     prefixIcon: Icon(
                       Icons.lock,
                       color: MyTheme.hintColor,
@@ -160,9 +105,6 @@ class _MeRegState extends State<MeReg> {
               height: MyTheme.sz(20),
             ),
             Container(
-              height: MyTheme.sz(20),
-            ),
-            Container(
               padding: EdgeInsets.symmetric(
                   vertical: MyTheme.sz(5), horizontal: MyTheme.sz(0)),
               child: FlatButton(
@@ -176,7 +118,7 @@ class _MeRegState extends State<MeReg> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text('注 册',
+                    Text('确 定',
                         style: TextStyle(
                             fontSize: MyTheme.sz(18), color: Colors.white))
                   ],
