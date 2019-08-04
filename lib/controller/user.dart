@@ -21,6 +21,15 @@ class UserController {
     sink.add(_lastData);
   }
 
+  modifyAvatar(path) {
+    _lastData.avatar = path;
+    add(_lastData);
+  }
+
+  logout() {
+    add(UserModel());
+  }
+
   login() async {
     //这里先进行网络调用
     add(
@@ -29,6 +38,8 @@ class UserController {
         userName: "吴亦凡",
         avatar: "https://g2.ykimg.com/051400005C2732E9ADA7B2194206B4B5",
         phone: "12300000000",
+        gender: "男",
+        birth: "2019-08-11",
         vip: true,
         vipEndTime: "2019-08-11 22:11",
         balance: 20,

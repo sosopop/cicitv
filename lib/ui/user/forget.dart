@@ -117,7 +117,11 @@ class _UserForgetState extends State<UserForget> {
                         padding: EdgeInsets.all(4),
                         child: Text(
                           vcodeTimer > 0 ? '还剩($vcodeTimer)秒' : '获取验证码',
-                          style: TextStyle(fontSize: 12, color: MyTheme.color),
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: vcodeTimer > 0
+                                  ? MyTheme.fontLightColor
+                                  : MyTheme.fontDeepColor),
                         ),
                       ),
                     ),

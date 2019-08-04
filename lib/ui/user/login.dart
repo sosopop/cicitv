@@ -107,7 +107,7 @@ class _UserLoginState extends State<UserLogin> {
                 children: <Widget>[
                   FlatButton(
                     onPressed: () {
-                      Navigator.pushReplacementNamed(context, '/me/forget');
+                      Navigator.pushReplacementNamed(context, '/user/forget');
                     },
                     child: Text(
                       '忘记密码',
@@ -119,7 +119,7 @@ class _UserLoginState extends State<UserLogin> {
                   ),
                   FlatButton(
                     onPressed: () {
-                      Navigator.pushReplacementNamed(context, '/me/reg');
+                      Navigator.pushReplacementNamed(context, '/user/reg');
                     },
                     child: Text(
                       '我要注册',

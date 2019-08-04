@@ -8,6 +8,7 @@ import 'package:cicitv/ui/user/reg.dart';
 import 'package:cicitv/ui/user/login.dart';
 import 'package:cicitv/ui/user/forget.dart';
 import 'package:cicitv/ui/user/modpass.dart';
+import 'package:cicitv/ui/user/modify.dart';
 
 void main() async {
   await SystemChrome.setPreferredOrientations(
@@ -33,7 +34,10 @@ void main() async {
       ],
       theme: ThemeData(
         appBarTheme: AppBarTheme(
-            brightness: Brightness.light, color: Colors.white, elevation: 0),
+            brightness: Brightness.light,
+            color: Colors.white,
+            elevation: 0,
+            textTheme: TextTheme(title: TextStyle(fontSize: MyTheme.sz(18)))),
         primaryTextTheme:
             TextTheme(button: TextStyle(color: MyTheme.fontColor)),
         highlightColor: Color.fromARGB(10, 0, 0, 0),
@@ -63,10 +67,11 @@ void main() async {
       debugShowCheckedModeBanner: false,
       routes: <String, WidgetBuilder>{
         '/home': (BuildContext context) => Index(),
-        '/me/reg': (BuildContext context) => UserReg(),
-        '/me/login': (BuildContext context) => UserLogin(),
-        '/me/forget': (BuildContext context) => UserForget(),
-        '/me/modpass': (BuildContext context) => UserModPass(),
+        '/user/reg': (BuildContext context) => UserReg(),
+        '/user/login': (BuildContext context) => UserLogin(),
+        '/user/forget': (BuildContext context) => UserForget(),
+        '/user/modpass': (BuildContext context) => UserModPass(),
+        '/user/modify': (BuildContext context) => UserModify(),
       },
     ),
   );

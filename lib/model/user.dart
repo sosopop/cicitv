@@ -4,6 +4,8 @@ class UserModel {
     this.userName = "",
     this.avatar = "",
     this.phone = "",
+    this.gender = '',
+    this.birth = '',
     this.vip = false,
     this.vipEndTime = "",
     this.balance = 0,
@@ -15,6 +17,8 @@ class UserModel {
   String userName;
   String avatar;
   String phone;
+  String gender;
+  String birth;
   bool vip;
   String vipEndTime;
   int balance;

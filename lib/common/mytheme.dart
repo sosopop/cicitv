@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 
+import 'package:flutter/material.dart' as prefix0;
+
 class MyTheme {
   //按屏幕尺寸计算大小
   static double sz(double size) {
@@ -11,7 +13,8 @@ class MyTheme {
     return Icon(Icons.arrow_back_ios);
   }
 
-  static AppBar appBar(context, {IconData iconData = Icons.arrow_back_ios}) {
+  static AppBar appBar(context,
+      {IconData iconData = Icons.arrow_back_ios, String text}) {
     return AppBar(
       leading: IconButton(
         onPressed: () {
@@ -19,6 +22,12 @@ class MyTheme {
         },
         icon: Icon(iconData),
       ),
+      title: text == null
+          ? null
+          : Text(
+              text,
+              style: TextStyle(color: MyTheme.fontDeepColor),
+            ),
     );
   }
 

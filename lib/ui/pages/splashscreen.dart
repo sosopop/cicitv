@@ -59,7 +59,7 @@ class _SplashScreenState extends State<SplashScreen> {
       },
       child: GestureDetector(
         onTap: () async {
-          //Navigator.pushReplacementNamed(context, '/me/modpass');
+          //Navigator.pushReplacementNamed(context, '/user/modpass');
           //return;
           await launch("https://www.baidu.com");
           routeToHome();

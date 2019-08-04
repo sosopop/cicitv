@@ -16,7 +16,7 @@ class _UnloginWidget extends StatelessWidget {
     return FlatButton(
       padding: EdgeInsets.all(20),
       onPressed: () {
-        Navigator.pushNamed(context, '/me/login');
+        Navigator.pushNamed(context, '/user/login');
       },
       color: MyTheme.bgColor,
       child: Column(
@@ -48,7 +48,7 @@ class _UnloginWidget extends StatelessWidget {
                       style: TextStyle(
                           fontSize: MyTheme.sz(20),
                           color: MyTheme.colorDeep,
-                          fontWeight: FontWeight.w600),
+                          fontWeight: FontWeight.bold),
                     ),
                     SizedBox(
                       height: MyTheme.sz(3),
@@ -80,7 +80,7 @@ class _LoginedWidget extends StatelessWidget {
     return FlatButton(
       padding: EdgeInsets.all(20),
       onPressed: () {
-        Navigator.pushNamed(context, '/me/login');
+        Navigator.pushNamed(context, '/user/modify');
       },
       color: MyTheme.bgColor,
       child: Column(
@@ -107,7 +107,7 @@ class _LoginedWidget extends StatelessWidget {
                       style: TextStyle(
                           fontSize: MyTheme.sz(20),
                           color: MyTheme.colorDeep,
-                          fontWeight: FontWeight.w600),
+                          fontWeight: FontWeight.bold),
                     ),
                     SizedBox(
                       height: MyTheme.sz(3),
@@ -168,7 +168,7 @@ class _UserStuffWidget extends StatelessWidget {
                     style: TextStyle(
                         color: MyTheme.fontDeepColor,
                         fontSize: MyTheme.sz(18),
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.bold,
                         fontStyle: FontStyle.italic),
                   ),
                   SizedBox(
@@ -191,7 +191,7 @@ class _UserStuffWidget extends StatelessWidget {
                     style: TextStyle(
                         color: MyTheme.fontDeepColor,
                         fontSize: MyTheme.sz(18),
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.bold,
                         fontStyle: FontStyle.italic),
                   ),
                   SizedBox(
@@ -214,7 +214,7 @@ class _UserStuffWidget extends StatelessWidget {
                     style: TextStyle(
                         color: MyTheme.fontDeepColor,
                         fontSize: MyTheme.sz(18),
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.bold,
                         fontStyle: FontStyle.italic),
                   ),
                   SizedBox(
@@ -237,7 +237,7 @@ class _UserStuffWidget extends StatelessWidget {
                     style: TextStyle(
                         color: MyTheme.fontDeepColor,
                         fontSize: MyTheme.sz(18),
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.bold,
                         fontStyle: FontStyle.italic),
                   ),
                   SizedBox(
@@ -332,7 +332,7 @@ class _IndexState extends State<UserIndex> with TickerProviderStateMixin {
                   children: <Widget>[
                     FlatButton(
                       padding: EdgeInsets.symmetric(
-                          horizontal: MyTheme.sz(15), vertical: MyTheme.sz(20)),
+                          horizontal: MyTheme.sz(15), vertical: MyTheme.sz(15)),
                       onPressed: () {},
                       child: Row(
                         children: <Widget>[
@@ -343,7 +343,7 @@ class _IndexState extends State<UserIndex> with TickerProviderStateMixin {
                             ),
                           ),
                           Text(
-                            "14547272@163.com",
+                            "symmetric@163.com",
                             style: _itemContentText,
                           ),
                         ],
@@ -356,8 +356,36 @@ class _IndexState extends State<UserIndex> with TickerProviderStateMixin {
                     ),
                     FlatButton(
                       padding: EdgeInsets.symmetric(
-                          horizontal: MyTheme.sz(15), vertical: MyTheme.sz(20)),
-                      onPressed: () {},
+                          horizontal: MyTheme.sz(15), vertical: MyTheme.sz(15)),
+                      onPressed: () async {
+                        TextEditingController nameController =
+                            TextEditingController();
+                        int ret = await showDialog<int>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('意见反馈'),
+                              content: TextField(
+                                controller: nameController,
+                                decoration: InputDecoration(
+                                  hintText: '请输入您的反馈意见',
+                                ),
+                              ),
+                              actions: <Widget>[
+                                FlatButton(
+                                  child: Text('确定'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop(1);
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                        if (ret == 1) {
+                          setState(() {});
+                        }
+                      },
                       child: Row(
                         children: <Widget>[
                           Expanded(
