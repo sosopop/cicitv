@@ -1,3 +1,6 @@
+import 'package:cicitv/ui/user/bill.dart';
+import 'package:cicitv/ui/user/buyvip.dart';
+import 'package:cicitv/ui/user/recharge.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -33,6 +36,7 @@ void main() async {
         Locale('zh', 'CH'),
       ],
       theme: ThemeData(
+        scaffoldBackgroundColor: Colors.grey[100],
         appBarTheme: AppBarTheme(
             brightness: Brightness.light,
             color: Colors.white,
@@ -46,7 +50,8 @@ void main() async {
         primarySwatch: MyTheme.color,
         primaryColor: MyTheme.color,
         textTheme: TextTheme(button: TextStyle(color: MyTheme.fontColor)),
-        snackBarTheme: SnackBarThemeData(backgroundColor: MyTheme.colorDark),
+        snackBarTheme:
+            SnackBarThemeData(backgroundColor: MyTheme.transBlackIcon),
         inputDecorationTheme: InputDecorationTheme(
           focusedBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: MyTheme.color, width: 0.5),
@@ -62,6 +67,7 @@ void main() async {
             fontSize: MyTheme.sz(14),
           ),
         ),
+        hintColor: MyTheme.hintColor,
       ),
       showPerformanceOverlay: false,
       debugShowCheckedModeBanner: false,
@@ -72,6 +78,9 @@ void main() async {
         '/user/forget': (BuildContext context) => UserForget(),
         '/user/modpass': (BuildContext context) => UserModPass(),
         '/user/modify': (BuildContext context) => UserModify(),
+        '/user/recharge': (BuildContext context) => UserRecharge(),
+        '/user/buyvip': (BuildContext context) => UserBuyVIP(),
+        '/user/bill': (BuildContext context) => UserBill(),
       },
     ),
   );

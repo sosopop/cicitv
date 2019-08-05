@@ -33,6 +33,7 @@ class MyTheme {
 
   static Color colorDark = Color.fromARGB(255, 96, 96, 96);
   static Color color = Colors.pink;
+  static Color secondColor = Colors.orange;
   static Color colorDeep = Colors.pink[700];
   static Color accentColor = Colors.pinkAccent;
   static Color bgColor = Colors.white;

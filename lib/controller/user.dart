@@ -26,6 +26,10 @@ class UserController {
     add(_lastData);
   }
 
+  UserModel info() {
+    return UserModel();
+  }
+
   logout() {
     add(UserModel());
   }

@@ -4,6 +4,9 @@ import 'package:flutter/widgets.dart';
 import 'package:cicitv/common/myimage.dart';
 import 'package:cicitv/common/mytheme.dart';
 import 'package:cicitv/common/global_controller.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class UserIndex extends StatefulWidget {
   @override
@@ -114,6 +117,14 @@ class _LoginedWidget extends StatelessWidget {
                     ),
                     Row(
                       children: <Widget>[
+                        Icon(
+                          FontAwesomeIcons.solidGem,
+                          color: Colors.orange,
+                          size: MyTheme.sz(12),
+                        ),
+                        SizedBox(
+                          width: MyTheme.sz(5),
+                        ),
                         Text(
                           user.vip ? "VIP过期时间:${user.vipEndTime}" : "尚未开通vip",
                           style: TextStyle(
@@ -139,17 +150,8 @@ class _LoginedWidget extends StatelessWidget {
 }
 
 class _UserStuffWidget extends StatelessWidget {
-  final int balance;
-  final bool vip;
-  final int watchCount;
-  final int watchTotal;
-  final int income;
-  _UserStuffWidget(
-      {this.balance = 0,
-      this.vip = false,
-      this.watchCount = 0,
-      this.watchTotal = 0,
-      this.income = 0});
+  final UserModel user;
+  _UserStuffWidget(this.user);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -160,11 +162,17 @@ class _UserStuffWidget extends StatelessWidget {
             child: FlatButton(
               padding: EdgeInsets.all(0),
               textColor: MyTheme.fontColor,
-              onPressed: () {},
+              onPressed: () {
+                if (user.userId.isNotEmpty) {
+                  Navigator.pushNamed(context, '/user/recharge');
+                } else {
+                  Navigator.pushNamed(context, '/user/login');
+                }
+              },
               child: Column(
                 children: <Widget>[
                   Text(
-                    balance.toString(),
+                    user.balance.toString(),
                     style: TextStyle(
                         color: MyTheme.fontDeepColor,
                         fontSize: MyTheme.sz(18),
@@ -183,11 +191,13 @@ class _UserStuffWidget extends StatelessWidget {
             child: FlatButton(
               padding: EdgeInsets.all(0),
               textColor: MyTheme.fontColor,
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, '/user/buyvip');
+              },
               child: Column(
                 children: <Widget>[
                   Text(
-                    vip ? "已开通" : "未开通",
+                    user.vip ? "已开通" : "未开通",
                     style: TextStyle(
                         color: MyTheme.fontDeepColor,
                         fontSize: MyTheme.sz(18),
@@ -210,7 +220,9 @@ class _UserStuffWidget extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   Text(
-                    watchCount.toString() + "/" + watchTotal.toString(),
+                    user.viewTimes.toString() +
+                        "/" +
+                        user.totalViewTimes.toString(),
                     style: TextStyle(
                         color: MyTheme.fontDeepColor,
                         fontSize: MyTheme.sz(18),
@@ -233,7 +245,7 @@ class _UserStuffWidget extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   Text(
-                    income.toString(),
+                    user.income.toString(),
                     style: TextStyle(
                         color: MyTheme.fontDeepColor,
                         fontSize: MyTheme.sz(18),
@@ -258,7 +270,10 @@ final TextStyle _itemTitleText = TextStyle(fontSize: MyTheme.sz(16));
 final TextStyle _itemContentText =
     TextStyle(fontSize: MyTheme.sz(14), color: MyTheme.fontColor);
 
-class _IndexState extends State<UserIndex> with TickerProviderStateMixin {
+class _IndexState extends State<UserIndex> {
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+
   @override
   void initState() {
     super.initState();
@@ -279,132 +294,130 @@ class _IndexState extends State<UserIndex> with TickerProviderStateMixin {
         if (!snapshot.hasData) return Container();
         var user = snapshot.data;
         return Scaffold(
-          body: ListView(
-            children: <Widget>[
-              user.userId.isEmpty ? _UnloginWidget() : _LoginedWidget(user),
-              _UserStuffWidget(
-                  balance: user.balance,
-                  vip: user.vip,
-                  watchCount: user.viewTimes,
-                  watchTotal: user.totalViewTimes,
-                  income: user.income),
-              SizedBox(
-                height: MyTheme.sz(5),
-              ),
-              Container(
-                padding: EdgeInsets.all(MyTheme.sz(10)),
-                child: FlatButton(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(MyTheme.sz(10))),
-                  padding: EdgeInsets.all(MyTheme.sz(12)),
-                  onPressed: () {},
-                  color: MyTheme.color,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Icon(
-                        Icons.attach_money,
-                        color: Colors.white,
-                      ),
-                      Text("我要充值",
-                          style: TextStyle(
-                              fontSize: MyTheme.sz(18), color: Colors.white))
-                    ],
+          body: SafeArea(
+            child: SmartRefresher(
+              controller: _refreshController,
+              enablePullDown: true,
+              onRefresh: () async {
+                return Future<void>.delayed(Duration(seconds: 1)).then((_) {
+                  _refreshController.refreshCompleted();
+                });
+              },
+              header: MaterialClassicHeader(),
+              child: ListView(
+                children: <Widget>[
+                  user.userId.isEmpty ? _UnloginWidget() : _LoginedWidget(user),
+                  _UserStuffWidget(user),
+                  SizedBox(
+                    height: MyTheme.sz(5),
                   ),
-                ),
-              ),
-              SizedBox(
-                height: MyTheme.sz(5),
-              ),
-              Container(
-                child: AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: MyImage(
-                      "https://u8.iqiyipic.com/xiuchang/20190116/3e/b3/xiuchang_5c3ee8ccf6882e0d73463eb3_banner.jpg"),
-                ),
-              ),
-              SizedBox(
-                height: MyTheme.sz(5),
-              ),
-              Container(
-                color: MyTheme.bgColor,
-                child: Column(
-                  children: <Widget>[
-                    FlatButton(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: MyTheme.sz(15), vertical: MyTheme.sz(15)),
-                      onPressed: () {},
+                  Container(
+                    padding: EdgeInsets.all(MyTheme.sz(10)),
+                    child: FlatButton(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(MyTheme.sz(10))),
+                      padding: EdgeInsets.all(MyTheme.sz(12)),
+                      onPressed: () {
+                        if (user.userId.isNotEmpty) {
+                          Navigator.pushNamed(context, '/user/recharge');
+                        } else {
+                          Navigator.pushNamed(context, '/user/login');
+                        }
+                      },
+                      color: MyTheme.color,
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              "官方邮箱",
-                              style: _itemTitleText,
-                            ),
+                          Icon(
+                            Icons.attach_money,
+                            color: Colors.white,
                           ),
-                          Text(
+                          Text("我要充值",
+                              style: TextStyle(
+                                  fontSize: MyTheme.sz(18),
+                                  color: Colors.white))
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MyTheme.sz(5),
+                  ),
+                  Container(
+                    child: AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child: MyImage(
+                          "https://u8.iqiyipic.com/xiuchang/20190116/3e/b3/xiuchang_5c3ee8ccf6882e0d73463eb3_banner.jpg"),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MyTheme.sz(5),
+                  ),
+                  Container(
+                    color: MyTheme.bgColor,
+                    child: Column(
+                      children: <Widget>[
+                        ListTile(
+                          title: Text(
+                            "官方邮箱",
+                            style: _itemTitleText,
+                          ),
+                          trailing: Text(
                             "symmetric@163.com",
                             style: _itemContentText,
                           ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: MyTheme.sz(15)),
-                      height: MyTheme.sz(1),
-                      color: Colors.grey[200],
-                    ),
-                    FlatButton(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: MyTheme.sz(15), vertical: MyTheme.sz(15)),
-                      onPressed: () async {
-                        TextEditingController nameController =
-                            TextEditingController();
-                        int ret = await showDialog<int>(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text('意见反馈'),
-                              content: TextField(
-                                controller: nameController,
-                                decoration: InputDecoration(
-                                  hintText: '请输入您的反馈意见',
-                                ),
-                              ),
-                              actions: <Widget>[
-                                FlatButton(
-                                  child: Text('确定'),
-                                  onPressed: () {
-                                    Navigator.of(context).pop(1);
-                                  },
-                                ),
-                              ],
+                        ),
+                        Divider(
+                          height: 1,
+                        ),
+                        ListTile(
+                          onTap: () async {
+                            TextEditingController nameController =
+                                TextEditingController();
+                            int ret = await showDialog<int>(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('意见反馈'),
+                                  content: TextField(
+                                    controller: nameController,
+                                    decoration: InputDecoration(
+                                      hintText: '请输入您的反馈意见',
+                                    ),
+                                  ),
+                                  actions: <Widget>[
+                                    FlatButton(
+                                      child: Text('确定'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop(1);
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
                             );
+                            if (ret == 1) {
+                              setState(() {});
+                            }
                           },
-                        );
-                        if (ret == 1) {
-                          setState(() {});
-                        }
-                      },
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              "意见反馈",
-                              style: _itemTitleText,
-                            ),
+                          title: Text(
+                            "意见反馈",
+                            style: _itemTitleText,
                           ),
-                          Icon(
+                          trailing: Icon(
                             Icons.chevron_right,
                             color: MyTheme.fontColor,
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              )
-            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: MyTheme.sz(40),
+                  )
+                ],
+              ),
+            ),
           ),
         );
       },

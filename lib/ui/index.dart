@@ -1,3 +1,4 @@
+import 'package:cicitv/common/mytoast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:cicitv/common/mytheme.dart';
@@ -5,6 +6,7 @@ import 'package:cicitv/ui/video/index.dart';
 import 'package:cicitv/ui/user/index.dart';
 import 'package:cicitv/ui/live/index.dart';
 import 'package:cicitv/ui/social/index.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Index extends StatefulWidget {
   @override
@@ -43,11 +45,7 @@ class _IndexState extends State<Index> with TickerProviderStateMixin {
         return WillPopScope(
             onWillPop: () async {
               if (exit) return true;
-              Scaffold.of(context).showSnackBar(SnackBar(
-                content: Text(
-                  "再次后退离开",
-                ),
-              ));
+              MyToast('再次后退离开');
               exit = true;
               return Future.delayed(Duration(seconds: 2), () {
                 exit = false;

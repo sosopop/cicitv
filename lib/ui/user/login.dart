@@ -1,9 +1,12 @@
+import 'package:cicitv/common/myloading.dart';
+import 'package:cicitv/common/mytoast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:cicitv/common/global_controller.dart';
 import 'package:cicitv/common/mytheme.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class UserLogin extends StatefulWidget {
   @override
@@ -139,9 +142,18 @@ class _UserLoginState extends State<UserLogin> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(MyTheme.sz(30))),
                 padding: EdgeInsets.all(MyTheme.sz(8)),
-                onPressed: () {
-                  GlobalController.user.login();
+                onPressed: () async {
+                  await showLoadingDialog(
+                    context: context,
+                    callback: (context) {
+                      GlobalController.user.login();
+                      Future.delayed(Duration(seconds: 2)).then((_) {
+                        Navigator.pop(context);
+                      });
+                    },
+                  );
                   Navigator.pop(context);
+                  MyToast('登录成功');
                 },
                 color: MyTheme.color,
                 child: Row(

@@ -2,12 +2,14 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:cicitv/common/global_controller.dart';
+import 'package:cicitv/common/myloading.dart';
 import 'package:cicitv/common/mytheme.dart';
 import 'package:cicitv/model/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cicitv/common/myimage.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -48,17 +50,72 @@ class _UserModifyState extends State<UserModify> {
               children: <Widget>[
                 GestureDetector(
                   onTap: () {
-                    ImagePicker.pickImage(source: ImageSource.gallery)
-                        .then((File file) {
-                      return ImageCropper.cropImage(
-                        sourcePath: file.path,
-                        ratioX: 1.0,
-                        ratioY: 1.0,
-                        maxWidth: 128,
-                        maxHeight: 128,
-                      );
-                    }).then((file) {
-                      //GlobalController.user.modifyAvatar(file.path);
+                    showDialog<int>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return SimpleDialog(
+                          title: const Text('请选择图像来源'),
+                          children: <Widget>[
+                            SimpleDialogOption(
+                              onPressed: () {
+                                Navigator.pop(context, 0);
+                              },
+                              child: Row(
+                                children: <Widget>[
+                                  const Icon(Icons.photo_album),
+                                  SizedBox(
+                                    width: MyTheme.sz(10),
+                                  ),
+                                  const Text('相机'),
+                                ],
+                              ),
+                            ),
+                            SimpleDialogOption(
+                              onPressed: () {
+                                Navigator.pop(context, 1);
+                              },
+                              child: Row(
+                                children: <Widget>[
+                                  const Icon(Icons.camera),
+                                  SizedBox(
+                                    width: MyTheme.sz(10),
+                                  ),
+                                  const Text('相机'),
+                                ],
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ).then(
+                      (source) {
+                        if (source == 0) {
+                          return ImagePicker.pickImage(
+                              source: ImageSource.gallery);
+                        } else if (source == 1) {
+                          return ImagePicker.pickImage(
+                              source: ImageSource.camera);
+                        }
+                        throw 0;
+                      },
+                    ).then(
+                      (File file) {
+                        if (file == null) throw 0;
+                        return ImageCropper.cropImage(
+                          sourcePath: file.path,
+                          ratioX: 1.0,
+                          ratioY: 1.0,
+                          maxWidth: 128,
+                          maxHeight: 128,
+                        );
+                      },
+                    ).then(
+                      (file) {
+                        if (file == null) throw 0;
+                        //GlobalController.user.modifyAvatar(file.path);
+                      },
+                    ).catchError((e) {
+                      print(e);
                     });
                   },
                   child: Container(
@@ -124,12 +181,6 @@ class _UserModifyState extends State<UserModify> {
                                 Navigator.of(context).pop(1);
                               },
                             ),
-                            FlatButton(
-                              child: Text('取消'),
-                              onPressed: () {
-                                Navigator.of(context).pop(0);
-                              },
-                            )
                           ],
                         );
                       },
@@ -159,10 +210,10 @@ class _UserModifyState extends State<UserModify> {
                     ],
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: MyTheme.sz(15)),
-                  height: MyTheme.sz(1),
-                  color: Colors.grey[200],
+                Divider(
+                  height: 1,
+                  indent: MyTheme.sz(10),
+                  endIndent: MyTheme.sz(10),
                 ),
                 FlatButton(
                   padding: EdgeInsets.symmetric(
@@ -179,13 +230,33 @@ class _UserModifyState extends State<UserModify> {
                               onPressed: () {
                                 Navigator.pop(context, '男');
                               },
-                              child: const Text('男生'),
+                              child: Row(
+                                children: <Widget>[
+                                  Icon(
+                                    FontAwesomeIcons.mars,
+                                  ),
+                                  SizedBox(
+                                    width: MyTheme.sz(10),
+                                  ),
+                                  const Text('男生'),
+                                ],
+                              ),
                             ),
                             SimpleDialogOption(
                               onPressed: () {
                                 Navigator.pop(context, '女');
                               },
-                              child: const Text('女生'),
+                              child: Row(
+                                children: <Widget>[
+                                  Icon(
+                                    FontAwesomeIcons.venus,
+                                  ),
+                                  SizedBox(
+                                    width: MyTheme.sz(10),
+                                  ),
+                                  const Text('女生'),
+                                ],
+                              ),
                             ),
                           ],
                         );
@@ -211,10 +282,10 @@ class _UserModifyState extends State<UserModify> {
                     ],
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: MyTheme.sz(15)),
-                  height: MyTheme.sz(1),
-                  color: Colors.grey[200],
+                Divider(
+                  height: 1,
+                  indent: MyTheme.sz(10),
+                  endIndent: MyTheme.sz(10),
                 ),
                 FlatButton(
                   padding: EdgeInsets.symmetric(
@@ -257,10 +328,10 @@ class _UserModifyState extends State<UserModify> {
                     ],
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: MyTheme.sz(15)),
-                  height: MyTheme.sz(1),
-                  color: Colors.grey[200],
+                Divider(
+                  height: 1,
+                  indent: MyTheme.sz(10),
+                  endIndent: MyTheme.sz(10),
                 ),
                 FlatButton(
                   padding: EdgeInsets.symmetric(
@@ -283,10 +354,10 @@ class _UserModifyState extends State<UserModify> {
                     ],
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: MyTheme.sz(15)),
-                  height: MyTheme.sz(1),
-                  color: Colors.grey[200],
+                Divider(
+                  height: 1,
+                  indent: MyTheme.sz(10),
+                  endIndent: MyTheme.sz(10),
                 ),
                 SizedBox(
                   height: MyTheme.sz(20),
@@ -298,7 +369,16 @@ class _UserModifyState extends State<UserModify> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(MyTheme.sz(30))),
                     padding: EdgeInsets.all(MyTheme.sz(8)),
-                    onPressed: () {
+                    onPressed: () async {
+                      await showLoadingDialog(
+                        context: context,
+                        callback: (context) {
+                          GlobalController.user.login();
+                          Future.delayed(Duration(seconds: 2)).then((_) {
+                            Navigator.pop(context);
+                          });
+                        },
+                      );
                       Navigator.pop(context);
                     },
                     color: MyTheme.color,
