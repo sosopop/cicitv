@@ -4,63 +4,63 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 typedef MyLoadingCallback = void Function(BuildContext context);
 
-Future showLoadingDialog({BuildContext context, String msg="正在处理中", MyLoadingCallback callback}){
-    return showGeneralDialog(
-      context: context,
-      pageBuilder: (BuildContext context, Animation<double> animation,
-          Animation<double> secondaryAnimation) {
-            callback(context);
-        return SafeArea(
-          child: Builder(
-            builder: (context) {
-              return Material(
-                color: Colors.transparent,
-                child: Align(
-                  alignment: Alignment.center,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(
-                        MyTheme.sz(10),
-                      ),
+Future showLoadingDialog(
+    {BuildContext context, String msg = "正在处理中", MyLoadingCallback callback}) {
+  return showGeneralDialog(
+    context: context,
+    pageBuilder: (BuildContext context, Animation<double> animation,
+        Animation<double> secondaryAnimation) {
+      callback(context);
+      return SafeArea(
+        child: Builder(
+          builder: (context) {
+            return Material(
+              color: Colors.transparent,
+              child: Align(
+                alignment: Alignment.center,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(
+                      MyTheme.sz(10),
                     ),
-                    child: Container(
-                      height: MyTheme.sz(120),
-                      width: MyTheme.sz(120),
-                      color: Colors.black54,
-                      child: Center(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            SpinKitCircle(
+                  ),
+                  child: Container(
+                    height: MyTheme.sz(120),
+                    width: MyTheme.sz(120),
+                    color: Colors.black54,
+                    child: Center(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          SpinKitCircle(
+                            color: Colors.white,
+                            size: MyTheme.sz(50.0),
+                          ),
+                          SizedBox(
+                            height: MyTheme.sz(15),
+                          ),
+                          Text(
+                            msg,
+                            style: TextStyle(
                               color: Colors.white,
-                              size: MyTheme.sz(50.0),
+                              fontSize: MyTheme.sz(14),
                             ),
-                            SizedBox(
-                              height: MyTheme.sz(15),
-                            ),
-                            Text(
-                              msg,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: MyTheme.sz(14),
-                              ),
-                            )
-                          ],
-                        ),
+                          )
+                        ],
                       ),
                     ),
                   ),
                 ),
-              );
-            },
-          ),
-        );
-      },
-      barrierDismissible: true,
-      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-      barrierColor: null,
-      transitionDuration: const Duration(milliseconds: 150),
-    );
-  }
+              ),
+            );
+          },
+        ),
+      );
+    },
+    barrierDismissible: true,
+    barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+    barrierColor: null,
+    transitionDuration: const Duration(milliseconds: 150),
+  );
 }
