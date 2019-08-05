@@ -1,5 +1,7 @@
+import 'package:cicitv/common/mytoast.dart';
 import 'package:cicitv/model/user.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:cicitv/common/myimage.dart';
 import 'package:cicitv/common/mytheme.dart';
@@ -308,6 +310,121 @@ class _IndexState extends State<UserIndex> {
                 children: <Widget>[
                   user.userId.isEmpty ? _UnloginWidget() : _LoginedWidget(user),
                   _UserStuffWidget(user),
+                  Container(
+                    padding: EdgeInsets.all(MyTheme.sz(10)),
+                    child: Card(
+                      elevation: 15.0,
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10.0),
+                        ),
+                      ),
+                      child: new Column(
+                        // card只能有一个widget，但这个widget内容可以包含其他的widget
+                        children: [
+                          Container(
+                            child: AspectRatio(
+                              aspectRatio: 16 / 9,
+                              child: MyImage(
+                                  "https://u8.iqiyipic.com/xiuchang/20190116/3e/b3/xiuchang_5c3ee8ccf6882e0d73463eb3_banner.jpg"),
+                            ),
+                          ),
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: MyTheme.sz(20),
+                              vertical: MyTheme.sz(10),
+                            ),
+                            child: Row(
+                              children: <Widget>[
+                                Text(
+                                  '我的推广码 ',
+                                  style: TextStyle(color: MyTheme.fontColor),
+                                ),
+                                Text(
+                                  'Zf43s',
+                                  style: TextStyle(color: MyTheme.color),
+                                ),
+                                Spacer(
+                                  flex: 1,
+                                ),
+                                FlatButton(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          MyTheme.sz(30))),
+                                  onPressed: () {
+                                    ClipboardData data = new ClipboardData(
+                                        text: "http://www.baidu.com");
+                                    Clipboard.setData(data);
+                                    MyToast('推广连接已经复制到剪贴板');
+                                  },
+                                  color: MyTheme.color,
+                                  child: Text(
+                                    '点击复制推广链接',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          Divider(height: 1),
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            padding: EdgeInsets.all(MyTheme.sz(20)),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  "推广1人,每日观影次数 +2",
+                                  style: TextStyle(color: MyTheme.fontColor),
+                                ),
+                                SizedBox(
+                                  height: MyTheme.sz(3),
+                                ),
+                                Text(
+                                  "推广2人,每日观影次数 +5",
+                                  style: TextStyle(color: MyTheme.fontColor),
+                                ),
+                                SizedBox(
+                                  height: MyTheme.sz(3),
+                                ),
+                                Text(
+                                  "推广5人,每日观影次数 +20",
+                                  style: TextStyle(color: MyTheme.fontColor),
+                                ),
+                                SizedBox(
+                                  height: MyTheme.sz(3),
+                                ),
+                                Text(
+                                  "推广10人,每日观影次数 +50",
+                                  style: TextStyle(color: MyTheme.fontColor),
+                                ),
+                                SizedBox(
+                                  height: MyTheme.sz(3),
+                                ),
+                                Text(
+                                  "推广30人,每日观影次数 +999",
+                                  style: TextStyle(color: MyTheme.fontColor),
+                                ),
+                                SizedBox(
+                                  height: MyTheme.sz(10),
+                                ),
+                                Text(
+                                  "用户充值返现40%,提现秒到账",
+                                  style: TextStyle(
+                                      color: MyTheme.fontDeepColor,
+                                      fontSize: MyTheme.sz(16)),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                   SizedBox(
                     height: MyTheme.sz(5),
                   ),
@@ -324,7 +441,7 @@ class _IndexState extends State<UserIndex> {
                           Navigator.pushNamed(context, '/user/login');
                         }
                       },
-                      color: MyTheme.color,
+                      color: MyTheme.colorDark,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -338,16 +455,6 @@ class _IndexState extends State<UserIndex> {
                                   color: Colors.white))
                         ],
                       ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: MyTheme.sz(5),
-                  ),
-                  Container(
-                    child: AspectRatio(
-                      aspectRatio: 16 / 9,
-                      child: MyImage(
-                          "https://u8.iqiyipic.com/xiuchang/20190116/3e/b3/xiuchang_5c3ee8ccf6882e0d73463eb3_banner.jpg"),
                     ),
                   ),
                   SizedBox(

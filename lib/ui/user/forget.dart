@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cicitv/common/myloading.dart';
 import 'package:cicitv/common/mytheme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -169,7 +170,15 @@ class _UserForgetState extends State<UserForget> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(MyTheme.sz(30))),
                 padding: EdgeInsets.all(MyTheme.sz(8)),
-                onPressed: () {
+                onPressed: () async {
+                  await showLoadingDialog(
+                    context: context,
+                    callback: (context) {
+                      Future.delayed(Duration(seconds: 2)).then((_) {
+                        Navigator.pop(context);
+                      });
+                    },
+                  );
                   Navigator.pop(context);
                 },
                 color: MyTheme.color,

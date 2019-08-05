@@ -129,9 +129,10 @@ class _UserRechargeState extends State<UserRecharge> {
                           expend = v;
                         });
                       },
+                      initiallyExpanded: true,
                       title: Text(
                         "购买卡密",
-                        style: TextStyle(fontSize: MyTheme.sz(14)),
+                        style: TextStyle(fontSize: MyTheme.sz(16)),
                       ),
                       trailing: RotatedBox(
                         quarterTurns: expend ? 1 : 0,
@@ -207,7 +208,7 @@ class _UserRechargeState extends State<UserRecharge> {
                           },
                           title: Text(
                             "激活卡密",
-                            style: TextStyle(fontSize: MyTheme.sz(14)),
+                            style: TextStyle(fontSize: MyTheme.sz(16)),
                           ),
                           trailing: Icon(
                             Icons.chevron_right,
@@ -223,7 +224,7 @@ class _UserRechargeState extends State<UserRecharge> {
                           },
                           title: Text(
                             "VIP购买",
-                            style: TextStyle(fontSize: MyTheme.sz(14)),
+                            style: TextStyle(fontSize: MyTheme.sz(16)),
                           ),
                           trailing: Icon(
                             Icons.chevron_right,
@@ -239,7 +240,7 @@ class _UserRechargeState extends State<UserRecharge> {
                           },
                           title: Text(
                             "消费充值记录",
-                            style: TextStyle(fontSize: MyTheme.sz(14)),
+                            style: TextStyle(fontSize: MyTheme.sz(16)),
                           ),
                           trailing: Icon(
                             Icons.chevron_right,
