@@ -33,13 +33,24 @@ class _UserCashOutState extends State<UserCashOut> {
           var user = snapshot.data;
           return Container(
             color: MyTheme.bgColor,
-            padding: EdgeInsets.symmetric(
-              horizontal: MyTheme.sz(15),
-            ),
             child: ListView(
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.symmetric(vertical: MyTheme.sz(10)),
+                  color: MyTheme.color,
+                  padding: EdgeInsets.all(MyTheme.sz(15)),
+                  child: Text(
+                    '提现提交后将会在24小时内到账,请注意查收.',
+                    style: TextStyle(color: Colors.white, fontSize: 12),
+                  ),
+                ),
+                SizedBox(
+                  height: MyTheme.sz(10),
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    vertical: MyTheme.sz(10),
+                    horizontal: MyTheme.sz(15),
+                  ),
                   child: Text(
                     '请选择提现方式',
                     style: TextStyle(color: MyTheme.fontColor),
@@ -91,13 +102,6 @@ class _UserCashOutState extends State<UserCashOut> {
                     decoration: InputDecoration(
                       hintText: '请输入本次提现金额',
                     ),
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.all(MyTheme.sz(15)),
-                  child: Text(
-                    '提现提交后将会在24小时内到账,请注意查收.',
-                    style: TextStyle(color: Colors.red, fontSize: 12),
                   ),
                 ),
                 Container(
