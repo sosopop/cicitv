@@ -387,11 +387,11 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
 
       print('@@@ advers clean success');
 
+      _state.status = VideoShowStatus.adver;
+      setState(() {});
       File fileStream = await DefaultCacheManager().getSingleFile(widget.adUrl);
       SingleVideoController.adverController =
           _state.adverController = VideoPlayerController.file(fileStream);
-      _state.status = VideoShowStatus.adver;
-
       setState(() {});
       _state.adverController.addListener(adverListener);
       _state.adverController.initialize().then((_) {
@@ -477,42 +477,48 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   }
 
   Widget _buildAdv() {
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-        color: Colors.black,
-        child: Stack(
-          children: <Widget>[
-            VideoPlayer(_state.adverController),
-            Positioned(
-              bottom: MyTheme.sz(0),
-              right: MyTheme.sz(0),
-              child: _buildCtrlBarFullScreen(),
+    return _state.adverController == null
+        ? Container(
+            color: Colors.black,
+            alignment: Alignment.center,
+            child: CircularProgressIndicator(),
+          )
+        : GestureDetector(
+            onTap: () {},
+            child: Container(
+              color: Colors.black,
+              child: Stack(
+                children: <Widget>[
+                  VideoPlayer(_state.adverController),
+                  Positioned(
+                    bottom: MyTheme.sz(0),
+                    right: MyTheme.sz(0),
+                    child: _buildCtrlBarFullScreen(),
+                  ),
+                  adLastSeconds == 0
+                      ? Center(child: CircularProgressIndicator())
+                      : Positioned(
+                          top: MyTheme.sz(10),
+                          right: MyTheme.sz(10),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.all(
+                                Radius.circular(MyTheme.sz(3))),
+                            child: Container(
+                              padding: EdgeInsets.all(MyTheme.sz(5)),
+                              color: Colors.black54,
+                              child: Text(
+                                "$adLastSeconds秒",
+                                style: TextStyle(
+                                    fontSize: MyTheme.sz(12),
+                                    color: MyTheme.revFontColor),
+                              ),
+                            ),
+                          ),
+                        )
+                ],
+              ),
             ),
-            adLastSeconds == 0
-                ? Center(child: CircularProgressIndicator())
-                : Positioned(
-                    top: MyTheme.sz(10),
-                    right: MyTheme.sz(10),
-                    child: ClipRRect(
-                      borderRadius:
-                          BorderRadius.all(Radius.circular(MyTheme.sz(3))),
-                      child: Container(
-                        padding: EdgeInsets.all(MyTheme.sz(5)),
-                        color: Colors.black54,
-                        child: Text(
-                          "$adLastSeconds秒",
-                          style: TextStyle(
-                              fontSize: MyTheme.sz(12),
-                              color: MyTheme.revFontColor),
-                        ),
-                      ),
-                    ),
-                  )
-          ],
-        ),
-      ),
-    );
+          );
   }
 
   Widget _buildCentorStatus() {
