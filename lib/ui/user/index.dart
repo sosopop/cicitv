@@ -8,7 +8,6 @@ import 'package:cicitv/common/mytheme.dart';
 import 'package:cicitv/common/global_controller.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class UserIndex extends StatefulWidget {
   @override
@@ -243,7 +242,9 @@ class _UserStuffWidget extends StatelessWidget {
             child: FlatButton(
               padding: EdgeInsets.all(0),
               textColor: MyTheme.fontColor,
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, '/user/income');
+              },
               child: Column(
                 children: <Widget>[
                   Text(

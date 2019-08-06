@@ -66,7 +66,7 @@ class _UserModifyState extends State<UserModify> {
                                   SizedBox(
                                     width: MyTheme.sz(10),
                                   ),
-                                  const Text('相机'),
+                                  const Text('相册'),
                                 ],
                               ),
                             ),

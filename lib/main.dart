@@ -1,5 +1,7 @@
 import 'package:cicitv/ui/user/bill.dart';
 import 'package:cicitv/ui/user/buyvip.dart';
+import 'package:cicitv/ui/user/cashout.dart';
+import 'package:cicitv/ui/user/income.dart';
 import 'package:cicitv/ui/user/recharge.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -81,6 +83,8 @@ void main() async {
         '/user/recharge': (BuildContext context) => UserRecharge(),
         '/user/buyvip': (BuildContext context) => UserBuyVIP(),
         '/user/bill': (BuildContext context) => UserBill(),
+        '/user/income': (BuildContext context) => UserIncome(),
+        '/user/cashout': (BuildContext context) => UserCashOut(),
       },
     ),
   );
