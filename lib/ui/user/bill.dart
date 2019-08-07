@@ -2,6 +2,7 @@ import 'package:cicitv/common/mytheme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class BillModel {
@@ -174,7 +175,10 @@ class _UserBillState extends State<UserBill> {
               if (mode == LoadStatus.idle) {
                 body = Text("上拉加载更多");
               } else if (mode == LoadStatus.loading) {
-                body = CupertinoActivityIndicator();
+                body = SpinKitWave(
+                  color: MyTheme.color,
+                  size: MyTheme.sz(20.0),
+                );
               } else if (mode == LoadStatus.failed) {
                 body = Text("加载失败,点击重试");
               } else {

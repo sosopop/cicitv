@@ -32,6 +32,13 @@ class _IndexState extends State<VideoIndex> with TickerProviderStateMixin {
             width: double.infinity,
             alignment: Alignment.centerLeft,
             child: TabBar(
+              indicator: UnderlineTabIndicator(
+                borderSide: BorderSide(
+                  width: 3,
+                  color: MyTheme.color,
+                ),
+                insets: EdgeInsets.only(left: 8, right: 8, bottom: 4),
+              ),
               labelPadding: EdgeInsets.symmetric(horizontal: MyTheme.sz(10)),
               indicatorSize: TabBarIndicatorSize.label,
               isScrollable: true,
@@ -53,7 +60,12 @@ class _IndexState extends State<VideoIndex> with TickerProviderStateMixin {
           elevation: 0,
           backgroundColor: MyTheme.bgColor,
           actions: <Widget>[
-            IconButton(icon: Icon(Icons.search), onPressed: () {})
+            IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {
+                Navigator.pushNamed(context, '/video/search');
+              },
+            ),
           ],
         ),
         body: TabBarView(controller: _tabController, children: <Widget>[

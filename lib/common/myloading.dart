@@ -40,7 +40,7 @@ Future showLoadingDialog(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            SpinKitCircle(
+                            SpinKitWave(
                               color: Colors.white,
                               size: MyTheme.sz(50.0),
                             ),
@@ -52,6 +52,7 @@ Future showLoadingDialog(
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: MyTheme.sz(14),
+                                fontWeight: FontWeight.bold,
                               ),
                             )
                           ],

@@ -11,6 +11,7 @@ import 'package:cicitv/ui/components/views/view_hor_scroll_panel.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:cicitv/ui/components/views/view_star_show_flow_item.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class MyPage extends StatefulWidget {
   final String url;
@@ -73,7 +74,10 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
                 if (mode == LoadStatus.idle) {
                   body = Text("上拉加载更多");
                 } else if (mode == LoadStatus.loading) {
-                  body = CircularProgressIndicator();
+                  body = SpinKitWave(
+                    color: MyTheme.color,
+                    size: MyTheme.sz(20.0),
+                  );
                 } else if (mode == LoadStatus.failed) {
                   body = Text("加载失败,点击重试");
                 } else {
@@ -172,7 +176,10 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
               if (mode == LoadStatus.idle) {
                 body = Text("上拉加载更多");
               } else if (mode == LoadStatus.loading) {
-                body = CircularProgressIndicator();
+                body = SpinKitWave(
+                  color: MyTheme.color,
+                  size: MyTheme.sz(20.0),
+                );
               } else if (mode == LoadStatus.failed) {
                 body = Text("加载失败,点击重试");
               } else {
@@ -220,7 +227,10 @@ class _MyPageState extends State<MyPage> with AutomaticKeepAliveClientMixin {
               if (mode == LoadStatus.idle) {
                 body = Text("上拉加载更多");
               } else if (mode == LoadStatus.loading) {
-                body = CircularProgressIndicator();
+                body = SpinKitWave(
+                  color: MyTheme.color,
+                  size: MyTheme.sz(20.0),
+                );
               } else if (mode == LoadStatus.failed) {
                 body = Text("加载失败,点击重试");
               } else {

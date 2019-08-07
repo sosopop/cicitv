@@ -1,8 +1,3 @@
-import 'package:cicitv/ui/user/bill.dart';
-import 'package:cicitv/ui/user/buyvip.dart';
-import 'package:cicitv/ui/user/cashout.dart';
-import 'package:cicitv/ui/user/income.dart';
-import 'package:cicitv/ui/user/recharge.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -14,6 +9,13 @@ import 'package:cicitv/ui/user/login.dart';
 import 'package:cicitv/ui/user/forget.dart';
 import 'package:cicitv/ui/user/modpass.dart';
 import 'package:cicitv/ui/user/modify.dart';
+import 'package:cicitv/ui/user/bill.dart';
+import 'package:cicitv/ui/user/buyvip.dart';
+import 'package:cicitv/ui/user/cashout.dart';
+import 'package:cicitv/ui/user/income.dart';
+import 'package:cicitv/ui/user/recharge.dart';
+import 'package:cicitv/ui/video/search.dart';
+import 'package:cicitv/ui/video/search_result.dart';
 
 void main() async {
   await SystemChrome.setPreferredOrientations(
@@ -85,6 +87,8 @@ void main() async {
         '/user/bill': (BuildContext context) => UserBill(),
         '/user/income': (BuildContext context) => UserIncome(),
         '/user/cashout': (BuildContext context) => UserCashOut(),
+        '/video/search': (BuildContext context) => VideoSearch(),
+        '/video/search_result': (BuildContext context) => VideoSearchResult(),
       },
     ),
   );
