@@ -1,3 +1,4 @@
+import 'package:cicitv/ui/video/play.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -89,6 +90,7 @@ void main() async {
         '/user/cashout': (BuildContext context) => UserCashOut(),
         '/video/search': (BuildContext context) => VideoSearch(),
         '/video/search_result': (BuildContext context) => VideoSearchResult(),
+        '/video/play': (BuildContext context) => VideoPlay(),
       },
     ),
   );

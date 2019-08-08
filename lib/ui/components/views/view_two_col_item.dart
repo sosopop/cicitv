@@ -7,11 +7,19 @@ class ViewTwoColItem extends StatelessWidget {
   final String picUrl;
   final String title;
   final String targetUrl;
-  ViewTwoColItem({this.picUrl, this.title, this.targetUrl});
+  ViewTwoColItem({
+    this.picUrl,
+    this.title,
+    this.targetUrl,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, '/video/play');
+      },
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Stack(
@@ -22,17 +30,18 @@ class ViewTwoColItem extends StatelessWidget {
                 aspectRatio: 16 / 9,
               ),
               ClipRRect(
-                  borderRadius: BorderRadius.vertical(
-                      bottom: Radius.circular(MyTheme.sz(3))),
-                  child: Container(
-                      padding: EdgeInsets.all(MyTheme.sz(3)),
-                      color: MyTheme.tagColor,
-                      child: Text(
-                        "100钻石",
-                        style: TextStyle(
-                            fontSize: MyTheme.sz(10),
-                            color: MyTheme.revFontColor),
-                      ))),
+                borderRadius: BorderRadius.vertical(
+                    bottom: Radius.circular(MyTheme.sz(3))),
+                child: Container(
+                  padding: EdgeInsets.all(MyTheme.sz(3)),
+                  color: MyTheme.tagColor,
+                  child: Text(
+                    "100钻石",
+                    style: TextStyle(
+                        fontSize: MyTheme.sz(10), color: MyTheme.revFontColor),
+                  ),
+                ),
+              ),
             ],
           ),
           Container(
@@ -44,6 +53,8 @@ class ViewTwoColItem extends StatelessWidget {
               maxLines: 1,
             ),
           )
-        ]);
+        ],
+      ),
+    );
   }
 }

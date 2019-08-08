@@ -35,12 +35,15 @@ class SingleVideoController {
   static _ViewVideoPlayerState currentState;
 }
 
+typedef CoverBuilder = Function(BuildContext context);
+
 class ViewVideoPlayer extends StatefulWidget {
   final String videoUrl;
-  final Function coverBuilder;
+  final CoverBuilder coverBuilder;
   final String adUrl;
   final bool fullscreen;
   final _ShareState state;
+  final bool autoPlay;
 
   ViewVideoPlayer({
     this.state,
@@ -48,6 +51,7 @@ class ViewVideoPlayer extends StatefulWidget {
     this.coverBuilder,
     this.adUrl,
     this.fullscreen = false,
+    this.autoPlay = false,
   });
 
   @override
@@ -55,7 +59,6 @@ class ViewVideoPlayer extends StatefulWidget {
 }
 
 class _ShareState {
-  _ShareState();
   VideoPlayerController videoController;
   VideoPlayerController adverController;
   int ref = 0;
@@ -120,6 +123,10 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
         "key:${widget.key},fullscreen:${widget.fullscreen} @@@@@@@@@@@@@@@@@@@@@@@,initState");
     super.initState();
     restorePlayStatus();
+
+    if (widget.autoPlay) {
+      allPlay();
+    }
   }
 
   @override
@@ -472,7 +479,9 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
       onTap: () {
         allPlay();
       },
-      child: widget.coverBuilder != null ? widget.coverBuilder() : Container(),
+      child: widget.coverBuilder != null
+          ? widget.coverBuilder(context)
+          : Container(),
     );
   }
 
@@ -496,7 +505,9 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
                     child: _buildCtrlBarFullScreen(),
                   ),
                   adLastSeconds == 0
-                      ? Center(child: CircularProgressIndicator())
+                      ? Center(
+                          child: CircularProgressIndicator(),
+                        )
                       : Positioned(
                           top: MyTheme.sz(10),
                           right: MyTheme.sz(10),

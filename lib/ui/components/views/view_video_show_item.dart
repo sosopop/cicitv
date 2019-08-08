@@ -83,7 +83,7 @@ class ViewVideoShowItem extends StatelessWidget {
     );
   }
 
-  Widget _buildCover() {
+  Widget _buildCover(BuildContext context) {
     return Stack(
       children: <Widget>[
         AspectRatio(
