@@ -1,3 +1,4 @@
+import 'package:cicitv/common/myloading.dart';
 import 'package:cicitv/common/mytheme.dart';
 import 'package:flutter/material.dart';
 
@@ -114,7 +115,13 @@ class _VideoSearchState extends State<VideoSearch> {
           ),
           IconButton(
             icon: Icon(Icons.search),
-            onPressed: () {
+            onPressed: () async {
+              await showLoadingDialog<void>(
+                context: context,
+                callback: (context) async {
+                  await Future.delayed(Duration(seconds: 2));
+                },
+              );
               Navigator.pushReplacementNamed(context, '/video/search_result',
                   arguments: _searchTextController.text);
             },

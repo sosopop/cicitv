@@ -143,13 +143,11 @@ class _UserLoginState extends State<UserLogin> {
                     borderRadius: BorderRadius.circular(MyTheme.sz(30))),
                 padding: EdgeInsets.all(MyTheme.sz(8)),
                 onPressed: () async {
-                  await showLoadingDialog(
+                  await showLoadingDialog<void>(
                     context: context,
-                    callback: (context) {
+                    callback: (context) async {
                       GlobalController.user.login();
-                      Future.delayed(Duration(seconds: 2)).then((_) {
-                        Navigator.pop(context);
-                      });
+                      await Future.delayed(Duration(seconds: 2));
                     },
                   );
                   Navigator.pop(context);

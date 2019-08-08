@@ -4,9 +4,9 @@ import 'package:cicitv/common/mytheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-typedef MyLoadingCallback = void Function(BuildContext context);
+typedef MyLoadingCallback = Future<void> Function(BuildContext context);
 
-Future showLoadingDialog(
+Future<T> showLoadingDialog<T>(
     {BuildContext context, String msg = "正在处理中", MyLoadingCallback callback}) {
   return showGeneralDialog(
     context: context,
@@ -15,7 +15,9 @@ Future showLoadingDialog(
       Animation<double> animation,
       Animation<double> secondaryAnimation,
     ) {
-      callback(context);
+      callback(context).then((value) {
+        Navigator.pop(context, value);
+      });
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
         child: SafeArea(

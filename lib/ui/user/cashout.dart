@@ -111,12 +111,10 @@ class _UserCashOutState extends State<UserCashOut> {
                         borderRadius: BorderRadius.circular(MyTheme.sz(30))),
                     padding: EdgeInsets.all(MyTheme.sz(8)),
                     onPressed: () async {
-                      await showLoadingDialog(
+                      await showLoadingDialog<void>(
                         context: context,
-                        callback: (context) {
-                          Future.delayed(Duration(seconds: 2)).then((_) {
-                            Navigator.pop(context);
-                          });
+                        callback: (context) async {
+                          await Future.delayed(Duration(seconds: 2));
                         },
                       );
                       Navigator.pop(context);
