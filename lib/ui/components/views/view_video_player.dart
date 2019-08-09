@@ -119,8 +119,8 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
   @override
   void initState() {
     _state.ref++;
-    print(
-        "key:${widget.key},fullscreen:${widget.fullscreen} @@@@@@@@@@@@@@@@@@@@@@@,initState");
+    //print(
+    //"key:${widget.key},fullscreen:${widget.fullscreen} @@@@@@@@@@@@@@@@@@@@@@@,initState");
     super.initState();
     restorePlayStatus();
 
@@ -135,12 +135,8 @@ class _ViewVideoPlayerState extends State<ViewVideoPlayer> {
     if (_state.ref == 0) {
       adverRelease();
       destoryVideoPlayer();
-      print(
-          "key:${widget.key},fullscreen:${widget.fullscreen} @@@@@@@@@@@@@@@@@@@@@@@,state dispose");
     } else {
       closeTimer();
-      print(
-          "key:${widget.key},fullscreen:${widget.fullscreen} @@@@@@@@@@@@@@@@@@@@@@@,dispose");
     }
     super.dispose();
   }
