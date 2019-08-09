@@ -15,7 +15,9 @@ class ViewStarShowFlowItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Navigator.pushNamed(context, '/video/person');
+      },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(MyTheme.sz(5)),
         child: Stack(

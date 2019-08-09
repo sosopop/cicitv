@@ -1,3 +1,4 @@
+import 'package:cicitv/ui/video/person.dart';
 import 'package:cicitv/ui/video/play.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -91,6 +92,7 @@ void main() async {
         '/video/search': (BuildContext context) => VideoSearch(),
         '/video/search_result': (BuildContext context) => VideoSearchResult(),
         '/video/play': (BuildContext context) => VideoPlay(),
+        '/video/person': (BuildContext context) => VideoPerson(),
       },
     ),
   );

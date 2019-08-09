@@ -441,22 +441,24 @@ class _VideoItem extends StatelessWidget {
               SizedBox(
                 width: 5,
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text('十二传说⚡人鱼事件'),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    '情侣山洞发现人鱼干尸',
-                    style: TextStyle(
-                      color: MyTheme.fontColor,
-                      fontSize: 12,
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text('十二传说⚡人鱼事件'),
+                    SizedBox(
+                      height: 5,
                     ),
-                  )
-                ],
-              )
+                    Text(
+                      '情侣山洞发现人鱼干尸',
+                      style: TextStyle(
+                        color: MyTheme.fontColor,
+                        fontSize: 12,
+                      ),
+                    )
+                  ],
+                ),
+              ),
             ],
           ),
         ),

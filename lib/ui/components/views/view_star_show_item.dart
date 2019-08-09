@@ -12,7 +12,9 @@ class ViewStarShowItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FlatButton(
-      onPressed: () {},
+      onPressed: () {
+        Navigator.pushNamed(context, '/video/person');
+      },
       padding: EdgeInsets.symmetric(horizontal: MyTheme.sz(2)),
       child: Column(children: <Widget>[
         Container(
